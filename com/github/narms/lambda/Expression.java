@@ -1,5 +1,6 @@
 package com.github.narms.lambda;
 
-public class Expression {
-    
+public abstract class Expression {
+    public abstract Expression reduce();
+    public abstract String toString();
 }
