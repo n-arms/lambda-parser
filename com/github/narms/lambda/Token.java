@@ -14,7 +14,9 @@ public class Token {
         this.value.append(value);
     }
     public Token(char value){
+        this.value = new StringBuffer();
         this.value.append(value);
+        this.setType();
     }
     public void addChar(char c){
         this.value.append(c);
@@ -45,6 +47,9 @@ public class Token {
     }
     public TokenType getType(){
         return this.type;
+    }
+    public String toString(){
+        return '<'+this.type.toString()+", "+this.value+'>';
     }
 
 }

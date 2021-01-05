@@ -1,5 +1,6 @@
 package com.github.narms.lambda;
 
+import java.util.ArrayDeque;
 import java.util.LinkedList;
 
 public class Test {
@@ -33,17 +34,8 @@ public class Test {
         Expression kite = new Function(args2, args2.get(1));     // KI a b = b, also known as logical false
         Expression cardinal = new Function(args1, new Application(new Application(args1.get(0), args1.get(2)), args1.get(2)));
         //C f a b = f b a, also know as functional composition, logical not
-        
-        Expression myAppli = new Application(cardinal, kestrel);
 
-        System.out.println(kestrel);
-        System.out.println(kite);
-        System.out.println(cardinal);
-        System.out.println(identity);
-        
-        System.out.println(myAppli);
-        myAppli = myAppli.reduce();
-        System.out.println(myAppli);
-
+        ArrayDeque<Token> myTokens = Lexer.lex("λab.b a");
+        System.out.println(myTokens);
     }
 }
