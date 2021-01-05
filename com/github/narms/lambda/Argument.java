@@ -34,6 +34,11 @@ public class Argument extends Expression{
     public Expression getLeft(){
         return this;
     }
+    
+    @Override
+    public boolean canReduce(Argument a){
+        return !(a.getName().equals(this.name));
+    }
 
     
     

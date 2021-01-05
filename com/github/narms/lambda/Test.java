@@ -5,6 +5,7 @@ import java.util.LinkedList;
 public class Test {
     public static void main (String[] args){
         LinkedList<Argument> args1 = new LinkedList<Argument>();
+        args1.add(new Argument("f"));
         args1.add(new Argument("a"));
         args1.add(new Argument("b"));
 
@@ -19,21 +20,30 @@ public class Test {
         LinkedList<Argument> args4 = new LinkedList<Argument>();
         args4.add(new Argument("p"));
         args4.add(new Argument("q"));
-        Expression func1 = new Function(args1, args1.get(1));
-        Expression func2 = new Function(args2, args2.get(0));
-        Expression func3 = new Function(args3, args3.get(1));
-        Expression func4 = new Function(args4, args4.get(1));
 
-        Expression myAppli = new Application(func1, new Application(func2, func3));
+        LinkedList<Argument> args5 = new LinkedList<Argument>();
+        args5.add(new Argument("m"));
+        args5.add(new Argument("n"));
 
-        System.out.println(func1);
-        //System.out.println(func1.defineArgument(new Argument("a"), new Argument("c")));
-        System.out.println(func2);
-        System.out.println(func3);
-        System.out.println(myAppli);
-        myAppli = myAppli.defineArgument(new Argument("a"), func4);
+        LinkedList<Argument> args6 = new LinkedList<Argument>();
+        args6.add(new Argument("z"));
+
+        Expression identity = new Function(args6, args6.get(0)); // I x = x
+        Expression kestrel = new Function(args5, args5.get(0));  // K a b = a, also known as logical true 
+        Expression kite = new Function(args2, args2.get(1));     // KI a b = b, also known as logical false
+        Expression cardinal = new Function(args1, new Application(new Application(args1.get(0), args1.get(2)), args1.get(2)));
+        //C f a b = f b a, also know as functional composition, logical not
+        
+        Expression myAppli = new Application(cardinal, kestrel);
+
+        System.out.println(kestrel);
+        System.out.println(kite);
+        System.out.println(cardinal);
+        System.out.println(identity);
+        
         System.out.println(myAppli);
         myAppli = myAppli.reduce();
         System.out.println(myAppli);
+
     }
 }

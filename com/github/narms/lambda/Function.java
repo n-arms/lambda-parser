@@ -68,4 +68,14 @@ public class Function extends Expression{
     public Expression getLeft(){
         return this;
     }
+
+    @Override
+    public boolean canReduce(Argument a){
+        for (Argument i: this.arguments){
+            if (a.getName().equals(i.getName())){
+                return false;
+            }
+        }
+        return this.body.canReduce(a);
+    }
 }

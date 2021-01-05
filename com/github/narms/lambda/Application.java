@@ -14,6 +14,8 @@ public class Application extends Expression{
     public Expression reduce() {
         this.left = this.left.reduce();
         this.right = this.right.reduce();
+        if (this.left instanceof Function)
+        return (((Function)this.left).apply(this.right)).reduce();
         return this;
     }
 
@@ -29,14 +31,14 @@ public class Application extends Expression{
         return this;
     }
 
-    public Expression apply(){
-        assert this.left instanceof Function;
-        return ((Function)this.left).apply(this.right);
-    }
-
     @Override
     public Expression getLeft(){
         return this.left.getLeft();
+    }
+
+    @Override
+    public boolean canReduce(Argument a){
+        return this.left.canReduce(a) && this.right.canReduce(a);
     }
     
 }
