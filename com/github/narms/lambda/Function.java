@@ -1,14 +1,20 @@
 package com.github.narms.lambda;
 
 import java.util.LinkedList;
+import java.util.List;
 
 public class Function extends Expression{
     //where the last element of the arraylist is the first argument in the lamnbda
-    private LinkedList<Argument> arguments; 
+    private List<Argument> arguments; 
     private Expression body;
     public Function(LinkedList<Argument> arguments, Expression body){
         this.arguments = arguments;
         this.body = body;
+    }
+
+    public Function(FunctionConstruct function){
+        this.arguments = function.getArguments();
+        this.body = function.getBody();
     }
 
     @Override
@@ -22,7 +28,7 @@ public class Function extends Expression{
         return this;
     }
 
-    public LinkedList<Argument> getArguments(){
+    public List<Argument> getArguments(){
         return this.arguments;
     }
 
@@ -44,7 +50,6 @@ public class Function extends Expression{
         output.append('.');
         output.append(this.body.toString());
         return output.toString();
-
     }
 
     @Override
