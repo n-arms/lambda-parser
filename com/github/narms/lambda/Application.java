@@ -12,13 +12,31 @@ public class Application extends Expression{
 
     @Override
     public Expression reduce() {
-        // TODO Auto-generated method stub
-        return null;
+        this.left = this.left.reduce();
+        this.right = this.right.reduce();
+        return this;
     }
 
     @Override
     public String toString() {
         return '(' + this.left.toString() +' '+this.right.toString()+')';
+    }
+
+    @Override
+    public Expression defineArgument(Argument a, Expression e){
+        this.left = this.left.defineArgument(a, e);
+        this.right = this.right.defineArgument(a, e);
+        return this;
+    }
+
+    public Expression apply(){
+        assert this.left instanceof Function;
+        return ((Function)this.left).apply(this.right);
+    }
+
+    @Override
+    public Expression getLeft(){
+        return this.left.getLeft();
     }
     
 }

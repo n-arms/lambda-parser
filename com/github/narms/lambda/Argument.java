@@ -16,5 +16,25 @@ public class Argument extends Expression{
     public String toString() {
         return this.name;
     }
+
+    public String getName(){
+        return this.name;
+    }
+
+    @Override
+    public Expression defineArgument(Argument a, Expression e){
+        if (a.getName().equals(this.name)){
+            return e;
+        }else{
+            return this;
+        }
+    }
+
+    @Override
+    public Expression getLeft(){
+        return this;
+    }
+
+    
     
 }
