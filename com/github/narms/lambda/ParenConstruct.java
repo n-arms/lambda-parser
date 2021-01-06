@@ -42,7 +42,7 @@ public class ParenConstruct extends Construct{
 
     @Override
     public Deque<Expression> parse(){
-        return Parser.parse(rawContents);
+        return Parser.parseObj(this.rawContents);
     }
 
     @Override

@@ -7,6 +7,7 @@ public class Token {
     private static final char rpar = ')';
     private static final char dot = '.';
     private static final char lambda = 'λ';
+    private static final char space = ' ';
 
     private StringBuffer value;
     private TokenType type;
@@ -31,6 +32,8 @@ public class Token {
             return TokenType.DOT;
             case lambda:
             return TokenType.LAMBDA;
+            case space:
+            return TokenType.SPACE;
             default:
             for (char l: letters){
                 if (l==c)

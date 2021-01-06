@@ -1,41 +1,20 @@
 package com.github.narms.lambda;
 
-import java.util.ArrayDeque;
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.List;
 
 public class Test {
     public static void main (String[] args){
-        LinkedList<Argument> args1 = new LinkedList<Argument>();
-        args1.add(new Argument("f"));
-        args1.add(new Argument("a"));
-        args1.add(new Argument("b"));
+        List<Expression> combinators = new ArrayList<Expression>();
+        combinators.add(Parser.parse(Lexer.lex("λab.a")).peek()); //logical true
+        combinators.add(Parser.parse(Lexer.lex("λcd.d")).peek()); //logical false
+        combinators.add(Parser.parse(Lexer.lex("λfeg.fge")).peek()); //logical not
 
-        LinkedList<Argument> args2 = new LinkedList<Argument>();
-        args2.add(new Argument("x"));
-        args2.add(new Argument("y"));
+        System.out.println(combinators);
+        Expression inverseTrue = new Application(combinators.get(2), combinators.get(0));
+        System.out.println(inverseTrue);
+        System.out.println(inverseTrue.reduce());
 
-        LinkedList<Argument> args3 = new LinkedList<Argument>();
-        args3.add(new Argument("i"));
-        args3.add(new Argument("j"));
-
-        LinkedList<Argument> args4 = new LinkedList<Argument>();
-        args4.add(new Argument("p"));
-        args4.add(new Argument("q"));
-
-        LinkedList<Argument> args5 = new LinkedList<Argument>();
-        args5.add(new Argument("m"));
-        args5.add(new Argument("n"));
-
-        LinkedList<Argument> args6 = new LinkedList<Argument>();
-        args6.add(new Argument("z"));
-
-        Expression identity = new Function(args6, args6.get(0)); // I x = x
-        Expression kestrel = new Function(args5, args5.get(0));  // K a b = a, also known as logical true 
-        Expression kite = new Function(args2, args2.get(1));     // KI a b = b, also known as logical false
-        Expression cardinal = new Function(args1, new Application(new Application(args1.get(0), args1.get(2)), args1.get(2)));
-        //C f a b = f b a, also know as functional composition, logical not
-
-        ArrayDeque<Token> myTokens = Lexer.lex("λab.b a");
-        System.out.println(myTokens);
     }
 }

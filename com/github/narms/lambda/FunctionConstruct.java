@@ -8,6 +8,7 @@ import java.util.List;
 public class FunctionConstruct extends Construct{
     ArrayDeque<Object> arguments;
     ArrayDeque<Object> body;
+    Expression completeBody;
     boolean onBody;
     public FunctionConstruct(){
         arguments = new ArrayDeque<Object>();
@@ -36,22 +37,29 @@ public class FunctionConstruct extends Construct{
         ArrayDeque<Object> argumentHelper = this.arguments.clone();
         for(int i = 0; i<this.arguments.size(); i++)
         output.add((Argument)argumentHelper.pop());
-
         return output;
     }
     public Expression getBody(){
-        assert(body.size()==1 && body.peek() instanceof Expression);
-        return (Expression)body.peek();
+        assert(completeBody != null);
+        return completeBody;
     }
 
     @Override
     public Deque<Expression> parse(){
-        return Parser.parse(this.body);
+        Deque<Expression> output = Parser.parseObj(body);
+
+        for (int i = 0; i<arguments.size(); i++){
+            Token current = (Token)arguments.pop();
+            arguments.add(new Argument(current.getValue()));
+        }
+        
+        assert(!output.isEmpty() && output.size()==1);
+        completeBody = output.peek();
+        return output;
     }
 
     @Override
     public String toString(){
         return "λ"+arguments+"."+body;
     }
-
 }
