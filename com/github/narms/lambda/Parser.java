@@ -4,35 +4,61 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 
 public class Parser {
-    public static Deque<Expression> parse(Deque<Token> struct){
+    public static Deque<Expression> parse(Deque<Token> tokens){
+        Deque<Object> struct = new ArrayDeque<Object>();
+        while (tokens.size()>0){
+            Token current = tokens.pop();
+            if (current.getType().equals(TokenType.LEFTPAREN)){
+                ParenConstruct build = new ParenConstruct();
+                current = tokens.pop();
+                while (!build.isFull()){
+                    build.addObject(current);
+                    if (!tokens.isEmpty())
+                    current = tokens.pop();
+                }
+                struct.add(build.parse().peek());
+            }
+            else{
+                struct.add(current);
+            }
+        }
+        System.out.println("entering main parse with "+struct);
         Deque<Expression> output = new ArrayDeque<Expression>();
         while (struct.size()>0){
-            Token current = struct.pop();
-            System.out.println(current);
-
-            switch(current.getType()){
-                case ARGUMENT:
+            Object current = struct.pop();
+            if (current instanceof Token){
+                Token currentToken = (Token)current;
+                switch(currentToken.getType()){
+                    case ARGUMENT:
+                    if (output.peek() == null){
+                        output.add(new Argument(currentToken.getValue()));
+                    }else{
+                        Expression last = output.pop();
+                        output.add(new Application(last, new Argument(currentToken.getValue())));
+                    }
+                    case LEFTPAREN:
+                    break;
+                    case RIGHTPAREN:
+                    break;
+                    case LAMBDA:
+                    FunctionConstruct build = new FunctionConstruct();
+                    while (currentToken.getType() != TokenType.SPACE && struct.size()>0){
+                        current = struct.pop();
+                        build.addObject(current);
+                    }
+                    build.parse();
+                    output.add(new Function(build));
+                    break;
+                    default:
+                    break;
+                }
+            }else if (current instanceof Expression){
+                System.out.println("entering non-tokeniezed parsing");
                 if (output.peek() == null){
-                    output.add(new Argument(current.getValue()));
+                    output.add((Expression)current);
                 }else{
-                    Expression last = output.pop();
-                    output.add(new Application(last, new Argument(current.getValue())));
+                    output.add(new Application(output.pop(), (Expression)current));
                 }
-                case LEFTPAREN:
-                break;
-                case RIGHTPAREN:
-                break;
-                case LAMBDA:
-                FunctionConstruct build = new FunctionConstruct();
-                while (current.getType() != TokenType.SPACE && struct.size()>0){
-                    current = struct.pop();
-                    build.addObject(current);
-                }
-                build.parse();
-                output.add(new Function(build));
-                break;
-                default:
-                break;
             }
         }
         return output;

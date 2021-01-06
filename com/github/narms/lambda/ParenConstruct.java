@@ -34,14 +34,17 @@ public class ParenConstruct extends Construct{
         Deque<Object> stringCopy = new ArrayDeque<Object>();
         stringCopy.addAll(rawContents);
         StringBuffer output = new StringBuffer();
+        output.append('(');
         while (stringCopy.size()>0){
             output.append(stringCopy.pop().toString());
         }
+        output.append(')');
         return output.toString();
     }
 
     @Override
     public Deque<Expression> parse(){
+        this.rawContents.removeLast();
         return Parser.parseObj(this.rawContents);
     }
 
