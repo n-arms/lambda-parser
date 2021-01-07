@@ -55,7 +55,7 @@ public class Function extends Expression{
     @Override
     public Expression defineArgument(Argument a, Expression e){
         for (int i = 0; i<this.arguments.size(); i++){
-            if (this.arguments.get(i).getName().equals(a.getName())){
+            if (this.arguments.get(i).equals(a)){
                 this.arguments.remove(i);
                 break;
             }
@@ -77,7 +77,7 @@ public class Function extends Expression{
     @Override
     public boolean canReduce(Argument a){
         for (Argument i: this.arguments){
-            if (a.getName().equals(i.getName())){
+            if (a.equals(i)){
                 return false;
             }
         }
