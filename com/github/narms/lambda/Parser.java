@@ -4,22 +4,27 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 
 public class Parser {
-    public static Deque<Expression> parse(Deque<Token> tokens){
+    public static Deque<Expression> parse(Deque<Object> objects){
         Deque<Object> struct = new ArrayDeque<Object>();
-        while (tokens.size()>0){
-            Token current = tokens.pop();
-            if (current.getType().equals(TokenType.LEFTPAREN)){
-                ParenConstruct build = new ParenConstruct();
-                current = tokens.pop();
-                while (!build.isFull()){
-                    build.addObject(current);
-                    if (!tokens.isEmpty())
-                    current = tokens.pop();
+        while (objects.size()>0){
+            Object currentObj = objects.pop();
+            if (currentObj instanceof Token){
+                Token current = (Token)currentObj;
+                if (current.getType().equals(TokenType.LEFTPAREN)){
+                    ParenConstruct build = new ParenConstruct();
+                    currentObj = objects.pop();
+                    while (!build.isFull()){
+                        build.addObject(currentObj);
+                        if (!objects.isEmpty())
+                        currentObj = objects.pop();
+                    }
+                    struct.add(build.parse().peek());
                 }
-                struct.add(build.parse().peek());
-            }
-            else{
-                struct.add(current);
+                else{
+                    struct.add(current);
+                }
+            }else{
+                struct.add(currentObj);
             }
         }
         System.out.println("entering main parse with "+struct);
@@ -64,10 +69,6 @@ public class Parser {
         return output;
     }
     public static Deque<Expression> parseObj(Deque<Object> struct){
-        Deque<Token> converter = new ArrayDeque<Token>();
-        while (!struct.isEmpty()){
-            converter.add((Token)struct.pop());
-        }
-        return Parser.parse(converter);
+        return Parser.parse(struct);
     }
 }
