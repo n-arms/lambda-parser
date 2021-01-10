@@ -1,6 +1,7 @@
 package com.github.narms.lambda;
 
 import java.util.Deque;
+import java.util.List;
 
 public class Application extends Expression {
 
@@ -13,15 +14,25 @@ public class Application extends Expression {
     }
 
     @Override
-    public Expression reduce() {
-        this.left = this.left.reduce();
-        this.right = this.right.reduce();
+    public Expression reduce(List<Argument> env) {
+        this.left = this.left.reduce(env);
+        this.right = this.right.reduce(env);
         for (String s: this.left.getBound()){
+            if (!in(env, s))
             this.right.redefine(s, s+"'");
         }
         if (this.left instanceof Function)
-            return (((Function) this.left).apply(this.right)).reduce();
+            return (((Function) this.left).apply(this.right)).reduce(env);
         return this;
+    }
+
+    private boolean in(List<Argument> env, String s){
+        for (Argument arg: env){
+            if (s.equals(arg.getName())){
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

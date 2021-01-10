@@ -2,6 +2,7 @@ package com.github.narms.lambda;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.List;
 
 public class Argument extends Expression {
     private String name;
@@ -22,7 +23,7 @@ public class Argument extends Expression {
     }
 
     @Override
-    public Expression reduce() {
+    public Expression reduce(List<Argument> env) {
         return this;
     }
 

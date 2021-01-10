@@ -20,8 +20,10 @@ public class Function extends Expression {
     }
 
     @Override
-    public Expression reduce() {
-        this.body = this.body.reduce();
+    public Expression reduce(List<Argument> env) {
+        List<Argument> scope = env;
+        scope.addAll(arguments);
+        this.body = this.body.reduce(scope);
         if (this.body instanceof Function) {
             this.arguments.addAll(((Function) this.body).getArguments());
 
