@@ -18,8 +18,9 @@ public class Application extends Expression {
         this.left = this.left.reduce(env);
         this.right = this.right.reduce(env);
         for (String s: this.left.getBound()){
-            if (!in(env, s))
-            this.right.redefine(s, s+"'");
+            if (!in(env, s)){
+                this.right.redefine(s, s+"'");
+            }
         }
         if (this.left instanceof Function)
             return (((Function) this.left).apply(this.right)).reduce(env);

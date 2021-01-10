@@ -1,5 +1,6 @@
 package com.github.narms.lambda;
 
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
@@ -21,8 +22,11 @@ public class Function extends Expression {
 
     @Override
     public Expression reduce(List<Argument> env) {
-        List<Argument> scope = env;
-        scope.addAll(arguments);
+        List<Argument> scope = new ArrayList<Argument>();
+        for (Argument a: env)
+        scope.add((Argument)a.copy());
+        for (Argument a: arguments)
+        scope.add((Argument)a.copy());
         this.body = this.body.reduce(scope);
         if (this.body instanceof Function) {
             this.arguments.addAll(((Function) this.body).getArguments());
