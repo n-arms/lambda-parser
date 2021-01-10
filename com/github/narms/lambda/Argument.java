@@ -61,6 +61,8 @@ public class Argument extends Expression {
         return output;
     }
 
-    
-    
+    @Override
+    public Expression copy() {
+        return new Argument(this.name);
+    }
 }

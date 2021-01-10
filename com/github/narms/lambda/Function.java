@@ -100,4 +100,12 @@ public class Function extends Expression {
         output.add(a.getName());
         return output;
     }
+
+    @Override
+    public Expression copy() {
+        LinkedList<Argument> outputCopy = new LinkedList<Argument>();
+        for (Argument a: arguments)
+        outputCopy.add((Argument)a.copy());
+        return new Function(outputCopy, body.copy());
+    }
 }

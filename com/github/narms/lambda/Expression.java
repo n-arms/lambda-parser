@@ -10,4 +10,5 @@ public abstract class Expression {
     public abstract boolean canReduce(Argument a);
     public abstract void redefine(String from, String to);
     public abstract Deque<String> getBound();
+    public abstract Expression copy();
 }

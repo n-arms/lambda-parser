@@ -58,4 +58,9 @@ public class Application extends Expression {
         output.addAll(this.right.getBound());
         return output;
     }
+
+    @Override
+    public Expression copy() {
+        return new Application(left.copy(), right.copy());
+    }
 }
