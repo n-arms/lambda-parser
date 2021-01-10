@@ -51,7 +51,6 @@ public class FunctionConstruct extends Construct{
         for (int i = 0; i<arguments.size(); i++){
             Token current = (Token)arguments.pop();
             arguments.add(new Argument(current.getValue()));
-            Argument.undefine((Argument)arguments.peekLast());
         }
         
         

@@ -27,7 +27,6 @@ public class Parser {
                 struct.add(currentObj);
             }
         }
-        System.out.println("entering main parse with "+struct);
         Deque<Expression> output = new ArrayDeque<Expression>();
         while (struct.size()>0){
             Object current = struct.pop();
@@ -58,7 +57,6 @@ public class Parser {
                     break;
                 }
             }else if (current instanceof Expression){
-                System.out.println("entering non-tokeniezed parsing");
                 if (output.peek() == null){
                     output.add((Expression)current);
                 }else{

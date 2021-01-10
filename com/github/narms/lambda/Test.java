@@ -1,32 +1,25 @@
 package com.github.narms.lambda;
 
-import java.util.Deque;
-import java.util.ArrayDeque;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.LinkedList;
+
 
 public class Test {
     public static void main (String[] args){
-        /*
-        List<Expression> combinators = new ArrayList<Expression>();
-        combinators.add(Parser.parse(Lexer.lex("λab.a")).peek()); //logical true
-        combinators.add(Parser.parse(Lexer.lex("λcd.d")).peek()); //logical false
-        combinators.add(Parser.parse(Lexer.lex("λfeg.fge")).peek()); //logical not
-
-        System.out.println(combinators);*/
-        Expression test = Parser.parse(Lexer.lex("(λab.a) b c")).peek();
-        System.out.println(test);
-        System.out.println(test.reduce());
-        /*
-        Argument a1 = new Argument("a");
-        Argument a2 = new Argument("a");
-        Deque<Argument> test = new ArrayDeque<Argument>();
-        test.add(a1);
-        Argument.undefine(test);
-        Argument a3 = new Argument("a");
-
-        System.out.println(a1+", "+a2+", "+a3);
-        System.out.println(a1.equals(a2));
-        System.out.println(a1.equals(a3));*/
+        LinkedList<Argument> a1 = new LinkedList<Argument>();
+        a1.add(new Argument("a"));
+        a1.add(new Argument("b"));
+        LinkedList<Argument> a2 = new LinkedList<Argument>();
+        a2.add(new Argument("a"));
+        a2.add(new Argument("b"));
+        Function True = new Function(a1, a1.get(0));
+        Function False = new Function(a2, a2.get(1));
+        Expression TrueFalse = new Application(True, False);
+        System.out.println(TrueFalse);
+        TrueFalse = TrueFalse.reduce();
+        System.out.println(TrueFalse);
+        TrueFalse = new Application(TrueFalse, new Argument("c"));
+        System.out.println(TrueFalse);
+        TrueFalse = TrueFalse.reduce();
+        System.out.println(TrueFalse);
     }
 }
