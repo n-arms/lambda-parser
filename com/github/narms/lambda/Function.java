@@ -20,39 +20,12 @@ public class Function extends Expression {
         this.body = function.getBody();
     }
 
-    @Override
-    public Expression reduce(List<Argument> env) {
-        List<Argument> scope = new ArrayList<Argument>();
-        for (Argument a: env)
-        scope.add((Argument)a.copy());
-        for (Argument a: arguments)
-        scope.add((Argument)a.copy());
-        this.body = this.body.reduce(scope);
-        if (this.body instanceof Function) {
-            this.arguments.addAll(((Function) this.body).getArguments());
-
-            this.body = ((Function) this.body).getBody();
-        }
-        return this;
-    }
-
     public List<Argument> getArguments() {
         return this.arguments;
     }
 
     public Expression getBody() {
         return this.body;
-    }
-
-    public Expression apply(Expression e) {
-        return this.defineArgument(this.arguments.get(0), e);
-    }
-
-    @Override
-    public void redefine(String from, String to) {
-        this.body.redefine(from, to);
-        for (Argument a : arguments)
-            a.redefine(from, to);
     }
 
     @Override
@@ -65,46 +38,6 @@ public class Function extends Expression {
         output.append('.');
         output.append(this.body.toString());
         return output.toString();
-    }
-
-    @Override
-    public Expression defineArgument(Argument a, Expression e) {
-        for (int i = 0; i < this.arguments.size(); i++) {
-            if (this.arguments.get(i).equals(a)) {
-                this.arguments.remove(i);
-                break;
-            }
-        }
-        this.body = this.body.defineArgument(a, e);
-
-        if (this.arguments.size() > 0) {
-            return this;
-        }
-        return this.body;
-
-    }
-
-    @Override
-    public Expression getLeft() {
-        return this;
-    }
-
-    @Override
-    public boolean canReduce(Argument a) {
-        for (Argument i : this.arguments) {
-            if (a.equals(i)) {
-                return false;
-            }
-        }
-        return this.body.canReduce(a);
-    }
-
-    @Override
-    public Deque<String> getBound() {
-        Deque<String> output = body.getBound();
-        for (Argument a: arguments)
-        output.add(a.getName());
-        return output;
     }
 
     @Override

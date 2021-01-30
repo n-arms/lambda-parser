@@ -133,7 +133,7 @@ public class Combinator {
         combinators.put(s, e);
     }
     public static Expression get(String s){
-        return combinators.get(s).copy().reduce(new ArrayList<Argument>());
+        return combinators.get(s).copy().normalize();
     }
     public static void delete(String s){
         combinators.remove(s);

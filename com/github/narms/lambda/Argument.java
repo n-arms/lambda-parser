@@ -13,22 +13,6 @@ public class Argument extends Expression {
     }
 
     @Override
-    public void redefine(String from, String to) {
-        if (from.equals(this.name))
-            this.name = to;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        return (o instanceof Argument) && this.name.equals(((Argument) o).getName());
-    }
-
-    @Override
-    public Expression reduce(List<Argument> env) {
-        return this;
-    }
-
-    @Override
     public String toString() {
         return this.name;
     }
@@ -38,29 +22,8 @@ public class Argument extends Expression {
     }
 
     @Override
-    public Expression defineArgument(Argument a, Expression e) {
-        if (a.equals(this)) {
-            return e;
-        } else {
-            return this;
-        }
-    }
-
-    @Override
-    public Expression getLeft() {
-        return this;
-    }
-
-    @Override
-    public boolean canReduce(Argument a) {
-        return !(a.getName().equals(this.name));
-    }
-
-    @Override
-    public Deque<String> getBound() {
-        Deque<String> output = new ArrayDeque<String>();
-        output.add(this.name);
-        return output;
+    public boolean equals(Object o) {
+        return (o instanceof Argument) && this.name.equals(((Argument) o).getName());
     }
 
     @Override
