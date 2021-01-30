@@ -128,4 +128,12 @@ public class Function extends Expression {
         this.body = this.body.betaReduce(a, e);
         return this;
     }
+
+    @Override
+    public List<String> bound(){
+        List<String> output = this.body.bound();
+        for (Argument a: arguments)
+        output.addAll(a.bound());
+        return output;
+    }
 }

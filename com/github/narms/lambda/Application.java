@@ -89,4 +89,11 @@ public class Application extends Expression {
         this.right = this.right.betaReduce(a, e);
         return this;
     }
+
+    @Override
+    public List<String> bound(){
+        List<String> output = this.left.bound();
+        output.addAll(this.right.bound());
+        return output;
+    }
 }

@@ -5,16 +5,16 @@ import java.util.List;
 
 public class Test {
     public static void main (String[] args){
-        Argument a = new Argument("a");
-        LinkedList<Argument> l = new LinkedList<Argument>();
-        l.add(a);
-        l.add(new Argument("b"));
-        List<String> scope = new LinkedList<String>();
-        scope.add(a.getName());
-        scope.add(l.get(1).getName());
-        Expression func = new Function(l, a);
-        System.out.println(func);
-        func = func.alphaReduce(scope);
-        System.out.println(func);
+        LinkedList<Argument> argsA = new LinkedList<Argument>();
+        argsA.add(new Argument("a"));
+        argsA.add(new Argument("b"));
+        LinkedList<Argument> argsB = new LinkedList<Argument>();
+        argsB.add(new Argument("a"));
+        argsB.add(new Argument("b"));
+        Function f1 = new Function(argsB, new Argument("a"));
+        Function f2 = new Function(argsA, new Argument("b"));
+        System.out.println(f1+"\n"+f2);
+        f1.alphaReduce(f2.bound());
+        System.out.println("\n"+f1+"\n"+f2);
     }
 }

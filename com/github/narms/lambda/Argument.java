@@ -1,6 +1,7 @@
 package com.github.narms.lambda;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 
@@ -87,5 +88,12 @@ public class Argument extends Expression {
         if (a.equals(this))
         return e;
         return this;
+    }
+
+    @Override
+    public List<String> bound(){
+        List<String> output = new ArrayList<String>();
+        output.add(name);
+        return output;
     }
 }
