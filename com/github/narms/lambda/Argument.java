@@ -96,4 +96,14 @@ public class Argument extends Expression {
         output.add(name);
         return output;
     }
+
+    @Override
+    public Expression normalize(){
+        return this;
+    }
+
+    @Override
+    public Expression format(){
+        return this;
+    }
 }

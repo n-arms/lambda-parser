@@ -136,4 +136,23 @@ public class Function extends Expression {
         output.addAll(a.bound());
         return output;
     }
+
+    @Override
+    public Expression normalize(){
+        this.body = this.body.normalize();
+        return this;
+    }
+
+    @Override
+    public Expression format(){
+        if (this.body instanceof Function){
+            List<String> scope = new ArrayList<String>();
+            for (Argument a: arguments)
+            scope.add(a.getName());
+            this.body.alphaReduce(scope);
+            this.arguments.addAll(((Function)this.body).getArguments());
+            this.body = ((Function)this.body).getBody();
+        }
+        return this;
+    }
 }

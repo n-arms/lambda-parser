@@ -96,4 +96,16 @@ public class Application extends Expression {
         output.addAll(this.right.bound());
         return output;
     }
+
+    @Override
+    public Expression normalize(){
+        throw new IllegalAccessError();
+    }
+
+    @Override
+    public Expression format(){
+        this.left = this.left.format();
+        this.right = this.right.format();
+        return this;
+    }
 }
