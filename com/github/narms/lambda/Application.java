@@ -99,7 +99,14 @@ public class Application extends Expression {
 
     @Override
     public Expression normalize(){
-        throw new IllegalAccessError();
+        this.left = this.left.normalize();
+        this.right = this.right.normalize();
+        if (this.left instanceof Function){
+            this.left = this.left.alphaReduce(this.right.bound());
+            this.left = ((Function)this.left).applyArgument(this.right);
+            return this.left.normalize();
+        }
+        return this;
     }
 
     @Override

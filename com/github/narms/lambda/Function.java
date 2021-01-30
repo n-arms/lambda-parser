@@ -149,10 +149,19 @@ public class Function extends Expression {
             List<String> scope = new ArrayList<String>();
             for (Argument a: arguments)
             scope.add(a.getName());
-            this.body.alphaReduce(scope);
+            this.body = this.body.alphaReduce(scope);
             this.arguments.addAll(((Function)this.body).getArguments());
             this.body = ((Function)this.body).getBody();
         }
         return this;
+    }
+
+    public Expression applyArgument(Expression e){
+        this.body = this.body.betaReduce(this.arguments.get(0), e);
+        this.arguments.remove(0);
+        if (this.arguments.size() > 0){
+            return this;
+        }
+        return this.body;
     }
 }

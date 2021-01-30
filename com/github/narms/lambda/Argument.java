@@ -86,7 +86,7 @@ public class Argument extends Expression {
     @Override
     public Expression betaReduce(Argument a, Expression e){
         if (a.equals(this))
-        return e;
+        return e.copy();
         return this;
     }
 
