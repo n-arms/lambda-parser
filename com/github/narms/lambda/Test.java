@@ -1,14 +1,20 @@
 package com.github.narms.lambda;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 public class Test {
     public static void main (String[] args){
-        Combinator.using("recursion");
-        Combinator.using("SKI");
-        Expression a1 = new Application(Combinator.get("K"), Combinator.get("K"));
-        System.out.println(a1);
-        System.out.println(a1.reduce(new ArrayList<Argument>()));
-        System.out.println(Combinator.get("M").reduce(new ArrayList<Argument>()));
+        Argument a = new Argument("a");
+        LinkedList<Argument> l = new LinkedList<Argument>();
+        l.add(a);
+        l.add(new Argument("b"));
+        List<String> scope = new LinkedList<String>();
+        scope.add(a.getName());
+        scope.add(l.get(1).getName());
+        Expression func = new Function(l, a);
+        System.out.println(func);
+        func = func.alphaReduce(scope);
+        System.out.println(func);
     }
 }

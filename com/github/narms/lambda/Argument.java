@@ -66,4 +66,26 @@ public class Argument extends Expression {
     public Expression copy() {
         return new Argument(this.name);
     }
+
+    @Override
+    public Expression alphaReduce(List<String> scope){
+        boolean isFinished = false;
+        while (!isFinished){
+            isFinished = true;
+            for (String s: scope){
+                if (s.equals(this.name)){
+                    isFinished = false;
+                    this.name = this.name+'\'';
+                }
+            }
+        }
+        return this;
+    }
+
+    @Override
+    public Expression betaReduce(Argument a, Expression e){
+        if (a.equals(this))
+        return e;
+        return this;
+    }
 }

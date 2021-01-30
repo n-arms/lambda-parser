@@ -23,7 +23,7 @@ public class Application extends Expression {
             }
         }
         if (this.left instanceof Function)
-            return (((Function) this.left).apply(this.right)).reduce(env);
+            return (((Function) this.left).apply(this.right));//.reduce(env);
         return this;
     }
 
@@ -74,5 +74,19 @@ public class Application extends Expression {
     @Override
     public Expression copy() {
         return new Application(left.copy(), right.copy());
+    }
+
+    @Override
+    public Expression alphaReduce(List<String> scope){
+        this.left = this.left.alphaReduce(scope);
+        this.right = this.right.alphaReduce(scope);
+        return this;
+    }
+
+    @Override
+    public Expression betaReduce(Argument a, Expression e){
+        this.left = this.left.betaReduce(a, e);
+        this.right = this.right.betaReduce(a, e);
+        return this;
     }
 }

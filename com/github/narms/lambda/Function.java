@@ -114,4 +114,18 @@ public class Function extends Expression {
         outputCopy.add((Argument)a.copy());
         return new Function(outputCopy, body.copy());
     }
+
+    @Override
+    public Expression alphaReduce(List<String> scope){
+        for (Argument a: arguments)
+        a.alphaReduce(scope);
+        this.body = this.body.alphaReduce(scope);
+        return this;
+    }
+
+    @Override
+    public Expression betaReduce(Argument a, Expression e){
+        this.body = this.body.betaReduce(a, e);
+        return this;
+    }
 }
