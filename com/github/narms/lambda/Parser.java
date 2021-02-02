@@ -52,6 +52,8 @@ public class Parser {
                     }
                     build.parse();
                     output.add(new Function(build));
+                    case VARIABLE:
+                    output.add(new Variable(currentToken.getValue()));
                     break;
                     default:
                     break;
