@@ -50,7 +50,7 @@ public class Variable extends Expression {
         if (Combinator.inScope(name)){
             value=Combinator.get(name).copy().normalize();
             defined=true;
-            return this;
+            return value;
         }
         return this;
     }

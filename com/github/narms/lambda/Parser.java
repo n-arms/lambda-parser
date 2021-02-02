@@ -6,6 +6,18 @@ import java.util.Deque;
 public class Parser {
     public static Deque<Expression> parse(Deque<Object> objects){
         Deque<Object> struct = new ArrayDeque<Object>();
+        Object headOfObjects = objects.peekFirst();
+        objects.removeFirst();
+        if (objects.peek() instanceof Token && ((Token)objects.peek()).getType().equals(TokenType.EQUAL)){
+            objects.removeFirst();
+            Deque<Expression> rightSide = Parser.parse(objects);
+            if (rightSide.size()>1)
+            return null;
+            Combinator.define(((Token)headOfObjects).getValue(), rightSide.peek());
+            return null;
+        }else{
+            objects.addFirst(headOfObjects);
+        }
         while (objects.size()>0){
             Object currentObj = objects.pop();
             if (currentObj instanceof Token){
@@ -52,8 +64,15 @@ public class Parser {
                     }
                     build.parse();
                     output.add(new Function(build));
+                    break;
                     case VARIABLE:
-                    output.add(new Variable(currentToken.getValue()));
+                    if (output.peek() == null){
+                        output.add(new Variable(currentToken.getValue()));
+                    }else{
+                        Expression last = output.pop();
+                        output.add(new Application(last, new Variable(currentToken.getValue())));
+                    }
+                    
                     break;
                     default:
                     break;

@@ -10,6 +10,7 @@ public class Token {
     private static final char space = ' ';
     private static final char[] uppercase = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 
     'I', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
+    private static final char equal = '=';
 
     private StringBuffer value;
     private TokenType type;
@@ -36,6 +37,8 @@ public class Token {
             return TokenType.LAMBDA;
             case space:
             return TokenType.SPACE;
+            case equal:
+            return TokenType.EQUAL;
             default:
             for (char l: letters){
                 if (l==c)
