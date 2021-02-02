@@ -8,6 +8,8 @@ public class Token {
     private static final char dot = '.';
     private static final char lambda = 'λ';
     private static final char space = ' ';
+    private static final char[] uppercase = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 
+    'I', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
 
     private StringBuffer value;
     private TokenType type;
@@ -38,6 +40,10 @@ public class Token {
             for (char l: letters){
                 if (l==c)
                 return TokenType.ARGUMENT;
+            }
+            for (char l: uppercase){
+                if (l==c)
+                return TokenType.VARIABLE;
             }
             throw new RuntimeException("illegal char "+c);
         }

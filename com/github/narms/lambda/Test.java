@@ -1,24 +1,27 @@
 package com.github.narms.lambda;
 
-import java.util.LinkedList;
+import java.util.Deque;
+import java.util.Scanner;
 
 public class Test {
     public static void main (String[] args){
-        LinkedList<Argument> argsA = new LinkedList<Argument>();
-        argsA.add(new Argument("a"));
-        argsA.add(new Argument("b"));
-        LinkedList<Argument> argsB = new LinkedList<Argument>();
-        argsB.add(new Argument("x"));
-
-        Expression k = new Function(argsA, new Argument("a"));
-        Expression m = new Function(argsB, new Application(new Argument("x"), new Argument("x")));
-        Expression a = new Application(m, k);
-        System.out.println(k);
-        System.out.println(m);
-        System.out.println(a);
-        a = a.normalize();
-        System.out.println(a);
-        a = a.format();
-        System.out.println(a);
+        Scanner s = new Scanner(System.in);
+        System.out.print("> ");
+        while (!s.hasNext("stop")){
+            try{
+                Deque<Expression> line = Parser.parse(Lexer.lex(s.nextLine()));
+                if (line.size() > 1){
+                    System.out.print("Parse failed: could not reduce "+line+" to one root tree\n> ");
+                }else{
+                    Expression e = line.pop();
+                    e = e.normalize();
+                    e = e.format();
+                    System.out.print(e+"\n> ");
+                }
+            }catch (Exception e){
+                System.out.println("error\n> ");
+            }
+        }
+        s.close();
     }
 }

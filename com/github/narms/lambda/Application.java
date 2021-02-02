@@ -1,6 +1,5 @@
 package com.github.narms.lambda;
 
-import java.util.Deque;
 import java.util.List;
 
 public class Application extends Expression {
