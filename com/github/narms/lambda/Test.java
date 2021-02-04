@@ -1,6 +1,5 @@
 package com.github.narms.lambda;
 
-import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Scanner;
 
