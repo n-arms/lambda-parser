@@ -1,0 +1,29 @@
+#!/bin/bash
+
+shell_interpreter="com.github.narms.lambda.Test"
+file_interpreter="com.github.narms.lambda.frontend.FileParser"
+
+function usage() {
+  echo "usage: ./lambda [filename]"
+}
+
+function run_shell(){
+  java -cp classes $shell_interpreter
+}
+
+function run_file(){
+  echo "not implemented"
+}
+
+if [[ $# -eq 1 ]]; then
+  run_file $1
+  exit 0
+else
+  if [[ $# -eq 0 ]]; then
+    run_shell
+    exit 0
+  else
+    echo $(usage)
+    exit 1
+  fi
+fi
