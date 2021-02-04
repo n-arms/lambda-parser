@@ -7,9 +7,18 @@ function usage(){
 }
 
 function build_files(){
-    echo "not implemented"
+    javac -d classes ${path}{Application,Argument,Combinator,Construct,Expression,Function,FunctionConstruct,Lexer,ParenConstruct,Parser,Test,Token,TokenType,Variable,frontend/FileParser}.java
 }
 
-function run_frontend(){
-    echo "not implemented"
-}
+if [[ $# -eq 1 ]]; then
+    if [[ $1 -eq "-b" ]]; then
+        build_files
+        exit 0
+    else
+        echo $(usage)
+        exit 1
+    fi
+else
+    echo $(usage)
+    exit 1
+fi

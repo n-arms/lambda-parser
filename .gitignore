@@ -1,0 +1,4 @@
+#ignore the .class files in the build path
+
+classes/com/github/narms/lambda/*.class
+classes/com/github/narms/lambda/frontend/*.class
