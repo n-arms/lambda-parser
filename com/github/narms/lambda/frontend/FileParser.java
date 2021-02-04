@@ -2,11 +2,12 @@ package com.github.narms.lambda.frontend;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Deque;
 
-import javax.management.RuntimeErrorException;
+import java.util.Deque;
+import java.util.NoSuchElementException;
 
 import com.github.narms.lambda.Expression;
 import com.github.narms.lambda.Lexer;
@@ -18,11 +19,14 @@ public class FileParser {
     static String line;
     static int l;
     static String file;
+    static boolean errorCatch;
     public static void main(String[] args) throws IOException{
-        if (args.length == 1){
-            file = args[0];
+        in = null;
+        if (args.length == 2){
+            errorCatch = Boolean.parseBoolean(args[0]);
+            file = args[1];
         }else{
-            System.out.println("FNF error");
+            System.out.println("FNF error, only "+args.length+" args");
             throw new IOException();
         }
         try{
@@ -30,19 +34,34 @@ public class FileParser {
             l=0;
             while ((line=in.readLine())!= null){
                 l++;
-                parsedLine = Parser.parse(Lexer.lex(line));
+                try{
+                    parsedLine = Parser.parse(Lexer.lex(line));
+                }catch (NoSuchElementException e){
+                    System.out.println("ERROR: line "+l+"\nparser failed to parse line "+line);
+                    if (!errorCatch){
+                        if (in != null)
+                        in.close();
+                        return;
+                    }  
+                }
                 if (parsedLine != null){
                     if (parsedLine.size() > 1){
-                        System.out.println("ERROR\nparser could not reduce line "+l+ " to a 1 root tree\n"+line);
+                        System.out.println("ERROR\nparser failed to parse line "+line+"\nparsed down to "+parsedLine);
+                        if (!errorCatch){
+                            if (in != null)
+                            in.close();
+                            return;
+                        }
                     }else{
                         System.out.println(parsedLine.peek().normalize().format());
                     }
                 }
             }
-        }catch (Exception e){
-            System.out.println("error");
+        }catch (FileNotFoundException e){
+            System.out.println("ERROR\nfile \""+file+"\" not found");
         }finally{
-
+            if (in != null)
+            in.close();
         }
     }
 }

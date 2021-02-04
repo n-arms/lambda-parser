@@ -7,7 +7,7 @@ function usage(){
 }
 
 function build_files(){
-    javac -d classes ${path}{Application,Argument,Combinator,Construct,Expression,Function,FunctionConstruct,Lexer,ParenConstruct,Parser,Test,Token,TokenType,Variable,frontend/FileParser}.java
+    javac -d classes ${path}{Application,Argument,Combinator,Construct,Expression,Function,FunctionConstruct,Lexer,ParenConstruct,Parser,Token,TokenType,Variable,frontend/FileParser,frontend/ShellParser}.java
 }
 
 if [[ $# -eq 1 ]]; then

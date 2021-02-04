@@ -1,29 +1,47 @@
 #!/bin/bash
 
-shell_interpreter="com.github.narms.lambda.Test"
+shell_interpreter="com.github.narms.lambda.frontend.ShellParser"
 file_interpreter="com.github.narms.lambda.frontend.FileParser"
+continue_on_error="-g"
+#-g signifies that program execution will continue after errors
 
 function usage() { #usage: usage
-  echo "usage: ./lambda [filename]"
+  echo "usage: ./lambda [flag] [filename]"
 }
 
-function run_shell(){ #usage: run_shell
-  java -cp classes $shell_interpreter
+function run_shell(){ #usage: run_shell stop_on_error
+  java -cp classes $shell_interpreter $1
 }
 
-function run_file(){ #usage: run_file filename
-  java -cp classes $file_interpreter $1
+function run_file(){ #usage: run_file stop_on_error filename
+  java -cp classes $file_interpreter "$1" "$2"
 }
 
-if [[ $# -eq 1 ]]; then
-  run_file $1
-  exit 0
-else
-  if [[ $# -eq 0 ]]; then
-    run_shell
+case $# in
+  0)
+    run_shell "false"
     exit 0
-  else
+    ;;
+  1)
+    if [[ "$1" == "$continue_on_error" ]]; then
+      run_shell "true"
+      exit 0
+    else
+      run_file "false" "$1"
+      exit 0
+    fi
+    ;;
+  2)
+    if [[ "$1" == "$continue_on_error" ]]; then
+      run_file "true" "$2"
+      exit 0
+    else
+      echo $(usage)
+      exit 1
+    fi
+    ;;
+  *)
     echo $(usage)
     exit 1
-  fi
-fi
+    ;;
+esac
