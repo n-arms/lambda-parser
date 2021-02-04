@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Deque;
 
+import javax.management.RuntimeErrorException;
+
 import com.github.narms.lambda.Expression;
 import com.github.narms.lambda.Lexer;
 import com.github.narms.lambda.Parser;
@@ -15,9 +17,16 @@ public class FileParser {
     static Deque<Expression> parsedLine;
     static String line;
     static int l;
+    static String file;
     public static void main(String[] args) throws IOException{
+        if (args.length == 1){
+            file = args[0];
+        }else{
+            System.out.println("FNF error");
+            throw new IOException();
+        }
         try{
-            in = new BufferedReader(new InputStreamReader(new FileInputStream("example.txt"), "UTF-8"));
+            in = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
             l=0;
             while ((line=in.readLine())!= null){
                 l++;

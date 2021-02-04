@@ -3,16 +3,16 @@
 shell_interpreter="com.github.narms.lambda.Test"
 file_interpreter="com.github.narms.lambda.frontend.FileParser"
 
-function usage() {
+function usage() { #usage: usage
   echo "usage: ./lambda [filename]"
 }
 
-function run_shell(){
+function run_shell(){ #usage: run_shell
   java -cp classes $shell_interpreter
 }
 
-function run_file(){
-  echo "not implemented"
+function run_file(){ #usage: run_file filename
+  java -cp classes $file_interpreter $1
 }
 
 if [[ $# -eq 1 ]]; then
