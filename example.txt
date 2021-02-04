@@ -1,2 +1,4 @@
-K=λab.λ
-K p q
+K=λab.a
+I=λx.x
+M=λx.(x x)
+K M I a

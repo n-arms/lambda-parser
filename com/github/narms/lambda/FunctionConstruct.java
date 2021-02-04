@@ -21,8 +21,7 @@ public class FunctionConstruct extends Construct{
 
     @Override
     public void addObject(Object o){
-        assert(o instanceof Token || o instanceof Expression);
-        if(o instanceof Token && ((Token)o).getType().equals(TokenType.DOT)){
+        if(!onBody && o instanceof Token && ((Token)o).getType().equals(TokenType.DOT)){
             onBody = true;
         }else{
             if (onBody){

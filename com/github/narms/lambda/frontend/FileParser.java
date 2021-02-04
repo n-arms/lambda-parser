@@ -26,7 +26,7 @@ public class FileParser {
             errorCatch = Boolean.parseBoolean(args[0]);
             file = args[1];
         }else{
-            System.out.println("FNF error, only "+args.length+" args");
+            System.out.println("    FNF error, only "+args.length+" args");
             throw new IOException();
         }
         try{
@@ -37,7 +37,7 @@ public class FileParser {
                 try{
                     parsedLine = Parser.parse(Lexer.lex(line));
                 }catch (NoSuchElementException e){
-                    System.out.println("ERROR: line "+l+"\nparser failed to parse line "+line);
+                    System.out.println("\tERROR: line "+l+"\n\tparser failed to parse line "+line);
                     if (!errorCatch){
                         if (in != null)
                         in.close();
@@ -46,7 +46,7 @@ public class FileParser {
                 }
                 if (parsedLine != null){
                     if (parsedLine.size() > 1){
-                        System.out.println("ERROR\nparser failed to parse line "+line+"\nparsed down to "+parsedLine);
+                        System.out.println("\tERROR\nparser failed to parse line "+line+"\n\tparsed down to "+parsedLine);
                         if (!errorCatch){
                             if (in != null)
                             in.close();
@@ -58,7 +58,7 @@ public class FileParser {
                 }
             }
         }catch (FileNotFoundException e){
-            System.out.println("ERROR\nfile \""+file+"\" not found");
+            System.out.println("\tERROR\n\tfile \""+file+"\" not found");
         }finally{
             if (in != null)
             in.close();

@@ -72,7 +72,6 @@ public class Parser {
                         Expression last = output.pop();
                         output.add(new Application(last, new Variable(currentToken.getValue())));
                     }
-                    
                     break;
                     default:
                     break;

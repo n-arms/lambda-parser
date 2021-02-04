@@ -26,7 +26,7 @@ public class ShellParser {
                 parsedLine = Parser.parse(Lexer.lex(line));
                 if (parsedLine != null){
                     if (parsedLine.size() != 1){
-                        System.out.println("ERROR\nparser failed to parse line "+line);
+                        System.out.println("    ERROR\nparser failed to parse line "+line);
                         if (!errorCatch){
                             if (in != null)
                             in.close();
@@ -37,11 +37,13 @@ public class ShellParser {
                     }
                 }
             }catch (NoSuchElementException e){
-                System.out.println("ERROR\nparser failed to parse line "+line);
-                if (in != null){
+                System.out.println("    ERROR\nparser failed to parse line "+line);
+                if (!errorCatch){
+                    if (in != null)
                     in.close();
-                    return;
-                }      
+                    return; 
+                }
+                   
             }
             System.out.print("> ");
         }

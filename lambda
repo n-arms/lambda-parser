@@ -10,11 +10,20 @@ function usage() { #usage: usage
 }
 
 function run_shell(){ #usage: run_shell stop_on_error
+  check_build "classes/com/github/narms/lambda/frontend/ShellParser.class"
   java -cp classes $shell_interpreter $1
 }
 
 function run_file(){ #usage: run_file stop_on_error filename
+  check_build "classes/com/github/narms/lambda/frontend/FileParser.class"
   java -cp classes $file_interpreter "$1" "$2"
+}
+
+function check_build(){ #main file
+  if [[ ! -f $1 ]]; then
+    echo "building"
+    bash build-script.sh -b
+  fi
 }
 
 case $# in

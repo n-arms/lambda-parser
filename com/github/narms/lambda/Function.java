@@ -50,7 +50,7 @@ public class Function extends Expression {
     @Override
     public Expression alphaReduce(List<String> scope){
         for (Argument a: arguments)
-        a.alphaReduce(scope);
+        a = (Argument)a.alphaReduce(scope);
         this.body = this.body.alphaReduce(scope);
         return this;
     }
@@ -79,9 +79,6 @@ public class Function extends Expression {
     public Expression format(){
         if (this.body instanceof Function){
             List<String> scope = new ArrayList<String>();
-            for (Argument a: arguments)
-            scope.add(a.getName());
-            this.body = this.body.alphaReduce(scope);
             this.arguments.addAll(((Function)this.body).getArguments());
             this.body = ((Function)this.body).getBody();
         }
