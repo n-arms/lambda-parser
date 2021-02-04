@@ -33,7 +33,7 @@ public class ShellParser {
                             return;
                         }  
                     }else{
-                        System.out.println(parsedLine.peek().normalize().format());
+                        System.out.println(parsedLine.peek().format().normalize().format());
                     }
                 }
             }catch (NoSuchElementException e){

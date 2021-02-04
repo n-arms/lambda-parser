@@ -53,7 +53,7 @@ public class FileParser {
                             return;
                         }
                     }else{
-                        System.out.println(parsedLine.peek().normalize().format());
+                        System.out.println(parsedLine.peek().format().normalize().format());
                     }
                 }
             }

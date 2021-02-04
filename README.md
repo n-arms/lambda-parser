@@ -1,23 +1,36 @@
-# Lambda Calculus Parser
-Code intended to parser and evaluate lambda calculus and combinatory logic. Lambda calculus is a notation for pure functions, and is arguably the first purely function programming language.
+# Lambda Calculus Interpreter
+This repository is a complete interpreter for classical untyped lambda calculus. It can work line by line via a bash shell, or interpret whole files on lambda calculus statements.
 
-This library is intended to:
-* Parse basic lambda calculus
-* Parse combinators and combinator definitions
-* Parse extended lambda calculus
+### Installation
+* git clone this repository
+* while in the root, run ```chmod +x lambda```
 
-## The lambda calculus
-In its basic form, the lambda calculus only has 1 kind of primitive: a function. Functions are represented as follows:\
-```λ<argument>.<body>```
+### Usage
+To start an interpreter session, run ```./lambda``` while in the root. \
+To interpret a file, run ```./lambda <filename>``` while in the root.\
+By default when an error is found, it ends the interpreter session or stops executing the rest of the program. To supress this behaviour add the ```-g``` flag.
 
-Function applications are represented as follows:\
-```<funtion1> <value>```
+## Classical Untyped Lambda Calculus
+Lambda calculus is a method of representing pure functions. In lambda calculus, the only primitive types are functions. 
 
-We can represent functions with multiple parameters in a process called curring:\
-```λa.λb.a```\
-Represents a function that takes in 2 values and returns the first (also called the kestrel). This can we seen if we pass the kestrel some values:\
-```(λa.λb.a) (p) (q) = (λb.p) (q) = p```
+### Function Definitions
+Functions are defined in the form ```λ<argument>.<return>```\
+For example: ```λx.x``` is a function that takes in some argument "x" and returns it. Parentheses can be used to clarify a function definition: ```λx.x = (λx.x) = λx.(x)```
 
-## The extended lambda calculus
-To make curried functions easier to read, this library reduces curried functions down to a form not in the original lambda calculus:
-```λa.λb.a = λab.a```
+### Function Applications
+Functions are applied very simply: ```<function> <argument>```\
+For example: ```(λx.x) q``` is a function that takes in an argument x and returns it, passed some argument q. To reduce this, we can return the body of the function, with every instance of x replaced with q. ```(λx.x) q = q```
+
+### Functional Currying
+In order to support functions with multiple paramters, a process called currying is employed. This is a where functions return *other functions*: ```λa.λb.a```\
+If we pass this new curried function an argument, it returns another function: ```(λa.λb.a) (q) = λb.q```\
+This syntax is somewhat convoluted, so this interpreter also can handle the following: ```λab.a```\
+This is equivilant to ```λa.(λb.a)```
+
+### Combinators
+This interpreter allows something else not in classical lambda calculus: combinator definitions. This allows you to store values inside of "combinators", or variables, and use them more than once. When you use a combinator in your code, it searches for a definition. If one is found, it replaces the combinator with the defined value. Combinator names must be a single uppercase letter. Some example code using combinators:
+```
+K=λab.a
+I=λx.x
+K I p q
+```
