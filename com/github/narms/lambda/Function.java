@@ -89,6 +89,7 @@ public class Function extends Expression {
     }
 
     public Expression applyArgument(Expression e) {
+        System.out.println("applying arg "+e+" to "+this);
         this.body = this.body.betaReduce(this.arguments.get(0), e, Argument.biggestID()-e.lowestID()+1);
         this.arguments.remove(0);
         if (this.arguments.size() > 0) {
@@ -129,5 +130,14 @@ public class Function extends Expression {
             highest = a.getID();
         }
         return highest;
+    }
+
+    @Override
+    public Expression duplicate() {
+        LinkedList<Argument> newArgs = new LinkedList<Argument>();
+        for (Argument a: arguments){
+            newArgs.add((Argument)a.duplicate());
+        }
+        return new Function(newArgs, body.duplicate());
     }
 }

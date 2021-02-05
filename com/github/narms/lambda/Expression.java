@@ -15,4 +15,5 @@ public abstract class Expression {
     public abstract void bind(Map<String, Long> scope);
     public abstract Long lowestID();
     public abstract Long highestID();
+    public abstract Expression duplicate();
 }

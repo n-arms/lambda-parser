@@ -52,6 +52,7 @@ public class Argument extends Expression {
 
     @Override
     public Expression betaReduce(Argument a, Expression e, Long offset){
+        System.out.println("beta reducing "+this+" with arg "+a+" expr "+e+" and offset "+offset);
         if (a.equals(this)){
             Long lowest = e.lowestID();
             while (Argument.argumentBindings.contains(lowest)){
@@ -96,8 +97,17 @@ public class Argument extends Expression {
 
     @Override
     public void bind(Map<String, Long> scope) {
-        if (id==null && scope.containsKey(name))
-        id = scope.get(name);
+        if (id==null && scope.containsKey(name)){
+            id = scope.get(name);
+        }else{
+            Long i = 0l;
+            while (Argument.argumentBindings.contains(i)){
+                i++;
+            }
+            Argument.argumentBindings.add(i);
+            id = i;
+        }
+        
     }
 
     @Override
@@ -117,5 +127,10 @@ public class Argument extends Expression {
     @Override
     public Long highestID(){
         return id;
+    }
+
+    @Override
+    public Expression duplicate(){
+        return new Argument(this.name);
     }
 }

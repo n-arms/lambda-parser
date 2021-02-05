@@ -87,4 +87,9 @@ public class Application extends Expression {
         return rightLow;
         return leftLow;
     }
+
+    @Override
+    public Expression duplicate(){
+        return new Application(left.duplicate(), right.duplicate());
+    }
 }

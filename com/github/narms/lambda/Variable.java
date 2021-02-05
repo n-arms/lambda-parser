@@ -1,6 +1,7 @@
 package com.github.narms.lambda;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -44,7 +45,8 @@ public class Variable extends Expression {
     @Override
     public Expression normalize() {
         if (Combinator.inScope(name)){
-            value=Combinator.get(name).copy(Combinator.get(name).lowestID(), new HashSet<Long>()).normalize();
+            value=Combinator.get(name).duplicate();
+            value.bind(new HashMap<String, Long>());
             defined=true;
             return value;
         }
@@ -66,14 +68,17 @@ public class Variable extends Expression {
 
     @Override
     public Long lowestID() {
-        // TODO Auto-generated method stub
-        return null;
+        return 0xffffffffffffffffL;
     }
 
     @Override
     public Long highestID() {
-        // TODO Auto-generated method stub
-        return null;
+        return -1L;
+    }
+
+    @Override
+    public Expression duplicate(){
+        return new Variable(this.name);
     }
 
 }
