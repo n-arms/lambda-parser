@@ -1,8 +1,10 @@
 package com.github.narms.lambda;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class Variable extends Expression {
     private String name;
@@ -14,7 +16,7 @@ public class Variable extends Expression {
     }
 
     @Override
-    public Expression copy() {
+    public Expression copy(Long offset, Set<Long> scope) {
         return new Variable(this.name);
     }
 
@@ -26,16 +28,9 @@ public class Variable extends Expression {
     }
 
     @Override
-    public Expression alphaReduce(List<String> scope) {
+    public Expression betaReduce(Argument a, Expression e, Long offset) {
         if (defined)
-        value = value.alphaReduce(scope);
-        return this;
-    }
-
-    @Override
-    public Expression betaReduce(Argument a, Expression e) {
-        if (defined)
-        value = value.betaReduce(a, e);
+        value = value.betaReduce(a, e, offset);
         return this;
     }
 
@@ -49,7 +44,7 @@ public class Variable extends Expression {
     @Override
     public Expression normalize() {
         if (Combinator.inScope(name)){
-            value=Combinator.get(name).copy().normalize();
+            value=Combinator.get(name).copy(Combinator.get(name).lowestID(), new HashSet<Long>()).normalize();
             defined=true;
             return value;
         }
@@ -68,4 +63,17 @@ public class Variable extends Expression {
         // TODO Auto-generated method stub
 
     }
+
+    @Override
+    public Long lowestID() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Long highestID() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

@@ -2,6 +2,7 @@ package com.github.narms.lambda;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class Application extends Expression {
 
@@ -19,23 +20,15 @@ public class Application extends Expression {
     }
 
     @Override
-    public Expression copy() {
-        return new Application(left.copy(), right.copy());
+    public Expression copy(Long offset, Set<Long> scope) {
+        return new Application(left.copy(offset, scope), right.copy(offset, scope));
     }
 
     @Override
-    public Expression alphaReduce(List<String> scope){
-        System.out.println("alpha reducing "+this+" with scope "+scope);
-        this.left = this.left.alphaReduce(scope);
-        this.right = this.right.alphaReduce(scope);
-        return this;
-    }
-
-    @Override
-    public Expression betaReduce(Argument a, Expression e){
+    public Expression betaReduce(Argument a, Expression e, Long offset){
         System.out.println("beta reducing "+this+" with arg "+a+" and expression "+e);
-        this.left = this.left.betaReduce(a, e);
-        this.right = this.right.betaReduce(a, e);
+        this.left = this.left.betaReduce(a, e, offset);
+        this.right = this.right.betaReduce(a, e, offset);
         return this;
     }
 
@@ -52,7 +45,7 @@ public class Application extends Expression {
         this.left = this.left.normalize();
         this.right = this.right.normalize();
         if (this.left instanceof Function){
-            this.left = this.left.alphaReduce(this.right.bound());
+            //this.left = this.left.alphaReduce(this.right.bound());
             this.left = ((Function)this.left).applyArgument(this.right);
             return this.left.normalize();
         }
@@ -71,5 +64,27 @@ public class Application extends Expression {
     public void bind(Map<String, Long> scope) {
         this.left.bind(scope);
         this.right.bind(scope);
+    }
+
+    @Override
+    public Long lowestID() {
+        Long leftLow = left.lowestID();
+        Long rightLow = right.lowestID();
+        if (leftLow != null && rightLow != null && rightLow > leftLow)
+        return leftLow;
+        if (rightLow==null)
+        return leftLow;
+        return rightLow;
+    }
+
+    @Override
+    public Long highestID() {
+        Long leftLow = left.lowestID();
+        Long rightLow = right.lowestID();
+        if (leftLow != null && rightLow != null && rightLow > leftLow)
+        return rightLow;
+        if (rightLow==null)
+        return rightLow;
+        return leftLow;
     }
 }

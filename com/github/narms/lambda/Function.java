@@ -2,9 +2,11 @@ package com.github.narms.lambda;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
 
 public class Function extends Expression {
@@ -43,26 +45,21 @@ public class Function extends Expression {
     }
 
     @Override
-    public Expression copy() {
+    public Expression copy(Long offset, Set<Long> scope) {
         LinkedList<Argument> outputCopy = new LinkedList<Argument>();
-        for (Argument a : arguments)
-            outputCopy.add((Argument) a.copy());
-        return new Function(outputCopy, body.copy());
+        Set<Long> newScope = new HashSet<Long>();
+        newScope.addAll(scope);
+        for (Argument a : arguments){
+            newScope.add(a.getID());
+            outputCopy.add((Argument) new Argument(a.getName(), a.getID()+offset));
+        }
+        return new Function(outputCopy, body.copy(offset, newScope));
     }
 
     @Override
-    public Expression alphaReduce(List<String> scope) {
-        System.out.println("alpha reducing " + this + " with scope " + scope);
-        for (Argument a : arguments)
-            a = (Argument) a.alphaReduce(scope);
-        this.body = this.body.alphaReduce(scope);
-        return this;
-    }
-
-    @Override
-    public Expression betaReduce(Argument a, Expression e) {
+    public Expression betaReduce(Argument a, Expression e, Long offset) {
         System.out.println("beta reducing " + this + " with arg " + a + " and expression " + e);
-        this.body = this.body.betaReduce(a, e);
+        this.body = this.body.betaReduce(a, e, offset);
         return this;
     }
 
@@ -85,7 +82,6 @@ public class Function extends Expression {
     public Expression format() {
         System.out.println("formatting " + this);
         if (this.body instanceof Function) {
-            List<String> scope = new ArrayList<String>();
             this.arguments.addAll(((Function) this.body).getArguments());
             this.body = ((Function) this.body).getBody();
         }
@@ -93,7 +89,7 @@ public class Function extends Expression {
     }
 
     public Expression applyArgument(Expression e) {
-        this.body = this.body.betaReduce(this.arguments.get(0), e);
+        this.body = this.body.betaReduce(this.arguments.get(0), e, Argument.biggestID()-e.lowestID()+1);
         this.arguments.remove(0);
         if (this.arguments.size() > 0) {
             return this;
@@ -103,14 +99,35 @@ public class Function extends Expression {
 
     @Override
     public void bind(Map<String, Long> scope) {
+        System.out.println("binding "+this+" with scope "+scope);
         Map<String, Long> newScope = new HashMap<String, Long>();
         for (Argument a: arguments){
-            newScope.put(a.getName(), a.genID());
+            newScope.put(a.getName(), Long.valueOf(a.genID().longValue()));
         }
         for (Entry<String, Long> entry: scope.entrySet()){
             if (!newScope.containsKey(entry.getKey()))
             newScope.put(entry.getKey(), entry.getValue());
         }
         this.body.bind(newScope);
+    }
+
+    @Override
+    public Long lowestID() {
+        Long lowest = body.lowestID();
+        for (Argument a: arguments){
+            if (a.getID() != null && a.getID() < lowest)
+            lowest = a.getID();
+        }
+        return lowest;
+    }
+
+    @Override
+    public Long highestID(){
+        Long highest = body.highestID();
+        for (Argument a: arguments){
+            if (a.getID() != null && a.getID() > highest)
+            highest = a.getID();
+        }
+        return highest;
     }
 }

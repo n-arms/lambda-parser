@@ -1,11 +1,14 @@
 package com.github.narms.lambda;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class Argument extends Expression {
-    public static List<String> argumentBindings = new ArrayList<String>();
+    public static Set<Long> argumentBindings = new HashSet<Long>(); 
+    //TODO replace with treeset for fast highest id calls
     private String name;
     private Long id;
 
@@ -14,9 +17,14 @@ public class Argument extends Expression {
         this.id = null;
     }
 
+    public Argument(String name, Long id){
+        this.name = name;
+        this.id = id;
+    }
+
     @Override
     public String toString() {
-        return "<"+this.name+", "+id+">";
+        return id==null ? name : id.toString();
     }
 
     public String getName() {
@@ -25,33 +33,33 @@ public class Argument extends Expression {
 
     @Override
     public boolean equals(Object o) {
-        return (o instanceof Argument) && this.id.equals(((Argument) o).getID());
+        if (this.id == null || !(o instanceof Argument) || ((Argument)o).getID() == null)
+        return false;
+        return (this.id.equals(((Argument)o).getID()));
     }
 
     @Override
-    public Expression copy() {
+    public Expression copy(Long offset, Set<Long> scope) {
+        if (this.id==null)
         return new Argument(this.name);
-    }
-
-    @Override
-    public Expression alphaReduce(List<String> scope){
-        boolean isFinished = false;
-        while (!isFinished){
-            isFinished = true;
-            for (String s: scope){
-                if (s.equals(this.name)){
-                    isFinished = false;
-                    this.name = this.name+'\'';
-                }
-            }
+        if (scope.contains(id)){
+            Argument.argumentBindings.add(this.id+offset);
+            return new Argument(this.name, this.id+offset);
         }
-        return this;
+        return new Argument(this.name, this.id);
+        
     }
 
     @Override
-    public Expression betaReduce(Argument a, Expression e){
-        if (a.equals(this))
-        return e.copy();
+    public Expression betaReduce(Argument a, Expression e, Long offset){
+        if (a.equals(this)){
+            Long lowest = e.lowestID();
+            while (Argument.argumentBindings.contains(lowest)){
+                lowest += offset;
+            }
+            Expression output = e.copy(lowest-e.lowestID(), new HashSet<Long>());
+            return output;
+        }
         return this;
     }
 
@@ -77,8 +85,12 @@ public class Argument extends Expression {
     }
 
     public Long genID(){
-        id = Long.valueOf(argumentBindings.size());
-        argumentBindings.add(name);
+        Long i = 0L;
+        while (Argument.argumentBindings.contains(i)){
+            i++;
+        }
+        id = i;
+        Argument.argumentBindings.add(id);
         return id;
     }
 
@@ -86,5 +98,24 @@ public class Argument extends Expression {
     public void bind(Map<String, Long> scope) {
         if (id==null && scope.containsKey(name))
         id = scope.get(name);
+    }
+
+    @Override
+    public Long lowestID() {
+        return id;
+    }
+
+    public static Long biggestID(){
+        Long highest = -1L;
+        for (Long l: Argument.argumentBindings){
+            if (l > highest)
+            highest = l;
+        }
+        return highest;
+    }
+
+    @Override
+    public Long highestID(){
+        return id;
     }
 }
