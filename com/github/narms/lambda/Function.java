@@ -58,7 +58,6 @@ public class Function extends Expression {
 
     @Override
     public Expression betaReduce(Argument a, Expression e, Long offset) {
-        System.out.println("beta reducing " + this + " with arg " + a + " and expression " + e);
         this.body = this.body.betaReduce(a, e, offset);
         return this;
     }
@@ -73,14 +72,12 @@ public class Function extends Expression {
 
     @Override
     public Expression normalize() {
-        System.out.println("normalizing " + this);
         this.body = this.body.normalize();
         return this;
     }
 
     @Override
     public Expression format() {
-        System.out.println("formatting " + this);
         if (this.body instanceof Function) {
             this.arguments.addAll(((Function) this.body).getArguments());
             this.body = ((Function) this.body).getBody();
@@ -89,7 +86,6 @@ public class Function extends Expression {
     }
 
     public Expression applyArgument(Expression e) {
-        System.out.println("applying arg "+e+" to "+this);
         this.body = this.body.betaReduce(this.arguments.get(0), e, Argument.biggestID()-e.lowestID()+1);
         this.arguments.remove(0);
         if (this.arguments.size() > 0) {
@@ -100,7 +96,6 @@ public class Function extends Expression {
 
     @Override
     public void bind(Map<String, Long> scope) {
-        System.out.println("binding "+this+" with scope "+scope);
         Map<String, Long> newScope = new HashMap<String, Long>();
         for (Argument a: arguments){
             newScope.put(a.getName(), Long.valueOf(a.genID().longValue()));

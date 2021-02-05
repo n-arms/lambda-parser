@@ -26,7 +26,6 @@ public class Application extends Expression {
 
     @Override
     public Expression betaReduce(Argument a, Expression e, Long offset){
-        System.out.println("beta reducing "+this+" with arg "+a+" and expression "+e);
         this.left = this.left.betaReduce(a, e, offset);
         this.right = this.right.betaReduce(a, e, offset);
         return this;
@@ -41,7 +40,6 @@ public class Application extends Expression {
 
     @Override
     public Expression normalize(){
-        System.out.println("normalizing "+this);
         this.left = this.left.normalize();
         this.right = this.right.normalize();
         if (this.left instanceof Function){
@@ -54,7 +52,6 @@ public class Application extends Expression {
 
     @Override
     public Expression format(){
-        System.out.println("formatting "+this);
         this.left = this.left.format();
         this.right = this.right.format();
         return this;

@@ -1,6 +1,7 @@
 package com.github.narms.lambda.frontend;
 
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.NoSuchElementException;
 
 import com.github.narms.lambda.Expression;
@@ -17,6 +18,7 @@ public class ShellParser {
     static Deque<Expression> parsedLine;
     static String line;
     static boolean errorCatch;
+    static Expression parsedExpr;
     public static void main(String[] args) throws IOException{
         errorCatch = Boolean.parseBoolean(args[0]);
         in = new BufferedReader(new InputStreamReader(System.in));
@@ -33,7 +35,9 @@ public class ShellParser {
                             return;
                         }  
                     }else{
-                        System.out.println(parsedLine.peek().format().normalize().format());
+                        parsedExpr = parsedLine.peek();
+                        parsedExpr.bind(new HashMap<String, Long>());
+                        System.out.println(parsedExpr.format().normalize().format());
                     }
                 }
             }catch (NoSuchElementException e){

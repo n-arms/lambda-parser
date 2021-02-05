@@ -27,7 +27,7 @@ public class Argument extends Expression {
         if (id == null)
         return name;
         StringBuffer output = new StringBuffer();
-        output.append((char)(id+97));
+        output.append((char)((id)%26+97));
         for (int i = 0; i<(int)(id.longValue()/26D); i++){
             output.append('\'');
         }
@@ -59,7 +59,6 @@ public class Argument extends Expression {
 
     @Override
     public Expression betaReduce(Argument a, Expression e, Long offset){
-        System.out.println("beta reducing "+this+" with arg "+a+" expr "+e+" and offset "+offset);
         if (a.equals(this)){
             Long lowest = e.lowestID();
             while (Argument.argumentBindings.contains(lowest)){

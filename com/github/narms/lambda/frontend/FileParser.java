@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.NoSuchElementException;
 
 import com.github.narms.lambda.Expression;
@@ -20,6 +21,7 @@ public class FileParser {
     static int l;
     static String file;
     static boolean errorCatch;
+    static Expression parsedExpr;
     public static void main(String[] args) throws IOException{
         in = null;
         if (args.length == 2){
@@ -53,7 +55,9 @@ public class FileParser {
                             return;
                         }
                     }else{
-                        System.out.println(parsedLine.peek().format().normalize().format());
+                        parsedExpr = parsedLine.peek();
+                        parsedExpr.bind(new HashMap<String, Long>());
+                        System.out.println(parsedExpr.normalize());
                     }
                 }
             }
