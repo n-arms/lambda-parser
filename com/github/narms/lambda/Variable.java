@@ -2,6 +2,7 @@ package com.github.narms.lambda;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class Variable extends Expression {
     private String name;
@@ -60,5 +61,11 @@ public class Variable extends Expression {
         if (defined)
         value = value.format();
         return this;
+    }
+
+    @Override
+    public void bind(Map<String, Long> scope) {
+        // TODO Auto-generated method stub
+
     }
 }

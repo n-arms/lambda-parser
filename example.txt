@@ -1,4 +1,5 @@
-K=λab.a
-I=λx.x
-M=λx.(x x)
-K M I a
+A=λfa.a
+B=λfa.(f a)
+C=λfa.(f (f a))
+D=λfa.(f (f (f a)))
+A B

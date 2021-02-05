@@ -2,3 +2,7 @@
 
 classes/com/github/narms/lambda/*.class
 classes/com/github/narms/lambda/frontend/*.class
+
+#ignore my bugfixing test file
+
+com/github/narms/lambda/Test.java

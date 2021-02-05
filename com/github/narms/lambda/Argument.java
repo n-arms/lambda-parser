@@ -2,17 +2,21 @@ package com.github.narms.lambda;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class Argument extends Expression {
+    public static List<String> argumentBindings = new ArrayList<String>();
     private String name;
+    private Long id;
 
     public Argument(String name) {
         this.name = name;
+        this.id = null;
     }
 
     @Override
     public String toString() {
-        return this.name;
+        return "<"+this.name+", "+id+">";
     }
 
     public String getName() {
@@ -21,7 +25,7 @@ public class Argument extends Expression {
 
     @Override
     public boolean equals(Object o) {
-        return (o instanceof Argument) && this.name.equals(((Argument) o).getName());
+        return (o instanceof Argument) && this.id.equals(((Argument) o).getID());
     }
 
     @Override
@@ -66,5 +70,21 @@ public class Argument extends Expression {
     @Override
     public Expression format(){
         return this;
+    }
+
+    public Long getID(){
+        return id;
+    }
+
+    public Long genID(){
+        id = Long.valueOf(argumentBindings.size());
+        argumentBindings.add(name);
+        return id;
+    }
+
+    @Override
+    public void bind(Map<String, Long> scope) {
+        if (id==null && scope.containsKey(name))
+        id = scope.get(name);
     }
 }

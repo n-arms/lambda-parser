@@ -1,6 +1,7 @@
 package com.github.narms.lambda;
 
 import java.util.List;
+import java.util.Map;
 
 public abstract class Expression {
     
@@ -11,4 +12,5 @@ public abstract class Expression {
     public abstract List<String> bound();
     public abstract Expression normalize();
     public abstract Expression format();
+    public abstract void bind(Map<String, Long> scope);
 }

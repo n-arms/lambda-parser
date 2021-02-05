@@ -1,6 +1,7 @@
 package com.github.narms.lambda;
 
 import java.util.List;
+import java.util.Map;
 
 public class Application extends Expression {
 
@@ -24,6 +25,7 @@ public class Application extends Expression {
 
     @Override
     public Expression alphaReduce(List<String> scope){
+        System.out.println("alpha reducing "+this+" with scope "+scope);
         this.left = this.left.alphaReduce(scope);
         this.right = this.right.alphaReduce(scope);
         return this;
@@ -31,6 +33,7 @@ public class Application extends Expression {
 
     @Override
     public Expression betaReduce(Argument a, Expression e){
+        System.out.println("beta reducing "+this+" with arg "+a+" and expression "+e);
         this.left = this.left.betaReduce(a, e);
         this.right = this.right.betaReduce(a, e);
         return this;
@@ -45,6 +48,7 @@ public class Application extends Expression {
 
     @Override
     public Expression normalize(){
+        System.out.println("normalizing "+this);
         this.left = this.left.normalize();
         this.right = this.right.normalize();
         if (this.left instanceof Function){
@@ -57,8 +61,15 @@ public class Application extends Expression {
 
     @Override
     public Expression format(){
+        System.out.println("formatting "+this);
         this.left = this.left.format();
         this.right = this.right.format();
         return this;
+    }
+
+    @Override
+    public void bind(Map<String, Long> scope) {
+        this.left.bind(scope);
+        this.right.bind(scope);
     }
 }
