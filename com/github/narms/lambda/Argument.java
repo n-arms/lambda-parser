@@ -24,7 +24,14 @@ public class Argument extends Expression {
 
     @Override
     public String toString() {
-        return id==null ? name : id.toString();
+        if (id == null)
+        return name;
+        StringBuffer output = new StringBuffer();
+        output.append((char)(id+97));
+        for (int i = 0; i<(int)(id.longValue()/26D); i++){
+            output.append('\'');
+        }
+        return output.toString();
     }
 
     public String getName() {
