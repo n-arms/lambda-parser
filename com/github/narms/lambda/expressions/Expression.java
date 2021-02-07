@@ -1,4 +1,4 @@
-package com.github.narms.lambda;
+package com.github.narms.lambda.expressions;
 
 import java.util.List;
 import java.util.Map;

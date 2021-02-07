@@ -5,14 +5,13 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.NoSuchElementException;
 
-import com.github.narms.lambda.Expression;
 import com.github.narms.lambda.Lexer;
-import com.github.narms.lambda.Parser;
+import com.github.narms.lambda.expressions.Expression;
+import com.github.narms.lambda.parsing.Parser;
 
 public class FileParser {
     static BufferedReader in;

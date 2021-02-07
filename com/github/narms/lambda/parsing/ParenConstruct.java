@@ -1,7 +1,10 @@
-package com.github.narms.lambda;
+package com.github.narms.lambda.parsing;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+
+import com.github.narms.lambda.Token;
+import com.github.narms.lambda.expressions.Expression;
 
 public class ParenConstruct extends Construct{
     Deque<Object> rawContents;

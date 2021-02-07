@@ -1,7 +1,16 @@
-package com.github.narms.lambda;
+package com.github.narms.lambda.parsing;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+
+import com.github.narms.lambda.Combinator;
+import com.github.narms.lambda.Token;
+import com.github.narms.lambda.TokenType;
+import com.github.narms.lambda.expressions.Application;
+import com.github.narms.lambda.expressions.Argument;
+import com.github.narms.lambda.expressions.Expression;
+import com.github.narms.lambda.expressions.Function;
+import com.github.narms.lambda.expressions.Variable;
 
 public class Parser {
     public static Deque<Expression> parse(Deque<Object> objects){

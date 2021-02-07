@@ -1,13 +1,14 @@
-package com.github.narms.lambda;
+package com.github.narms.lambda.expressions;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
+
+import com.github.narms.lambda.parsing.FunctionConstruct;
 
 public class Function extends Expression {
     // where the last element of the arraylist is the first argument in the lamnbda

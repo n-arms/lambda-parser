@@ -1,11 +1,12 @@
-package com.github.narms.lambda;
+package com.github.narms.lambda.expressions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import com.github.narms.lambda.Combinator;
 
 public class Variable extends Expression {
     private String name;
@@ -62,8 +63,7 @@ public class Variable extends Expression {
 
     @Override
     public void bind(Map<String, Long> scope) {
-        // TODO Auto-generated method stub
-
+        return;
     }
 
     @Override

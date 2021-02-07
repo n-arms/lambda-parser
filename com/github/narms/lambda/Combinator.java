@@ -1,7 +1,9 @@
 package com.github.narms.lambda;
 
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
+
+import com.github.narms.lambda.expressions.Expression;
 
 public class Combinator {
     private static Map<String, Expression> combinators = new HashMap<String, Expression>();

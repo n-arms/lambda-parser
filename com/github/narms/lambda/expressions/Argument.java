@@ -1,4 +1,4 @@
-package com.github.narms.lambda;
+package com.github.narms.lambda.expressions;
 
 import java.util.ArrayList;
 import java.util.HashSet;

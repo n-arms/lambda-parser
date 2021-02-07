@@ -1,5 +1,2 @@
-A=λfa.a
-B=λfa.(f a)
-C=λfa.(f (f a))
-D=λfa.(f (f (f a)))
-A B
+Y=λf.((λx.f(x x)) (λx.f(x x)))
+Y

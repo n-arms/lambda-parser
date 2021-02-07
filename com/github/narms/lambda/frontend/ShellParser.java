@@ -1,16 +1,15 @@
 package com.github.narms.lambda.frontend;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.NoSuchElementException;
 
-import com.github.narms.lambda.Expression;
 import com.github.narms.lambda.Lexer;
-import com.github.narms.lambda.Parser;
-
-import java.io.InputStreamReader;
-import java.io.BufferedReader;
-import java.io.IOException;
+import com.github.narms.lambda.expressions.Expression;
+import com.github.narms.lambda.parsing.Parser;
 
 
 public class ShellParser {
@@ -33,7 +32,7 @@ public class ShellParser {
                             if (in != null)
                             in.close();
                             return;
-                        }  
+                        }
                     }else{
                         parsedExpr = parsedLine.peek();
                         parsedExpr.bind(new HashMap<String, Long>());

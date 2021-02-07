@@ -1,9 +1,14 @@
-package com.github.narms.lambda;
+package com.github.narms.lambda.parsing;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
+
+import com.github.narms.lambda.Token;
+import com.github.narms.lambda.TokenType;
+import com.github.narms.lambda.expressions.Argument;
+import com.github.narms.lambda.expressions.Expression;
 
 public class FunctionConstruct extends Construct{
     ArrayDeque<Object> arguments;
