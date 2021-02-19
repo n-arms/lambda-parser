@@ -13,7 +13,7 @@
         yylval = yytext[0] - 'a';
         return (LOWER);
       }
-\\    {
+"|"   {
         return (LAMBDA);
       }
 "."   {

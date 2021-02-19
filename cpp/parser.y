@@ -4,13 +4,7 @@
   #include "parser.h"
   int yylex(void);
   void yyerror(char *);
-
-  struct AbstractBlock{
-    unsigned a_;
-    unsigned b_;
-    unsigned char type_;
-    //let 0 be argument, 1 be application, 2 be abstraction and 3 be pointer
-  } ;
+  extern FILE* yyin;
 
   void printBlock(unsigned head){
     if ((compileHeap+head) -> type_ == 0){
@@ -22,7 +16,7 @@
       printBlock((compileHeap+head) -> b_);
       printf(" )");
     }else{
-      printf("\\");
+      printf("|");
       printBlock((compileHeap+head) -> a_);
       printf(".");
       printBlock((compileHeap+head) -> b_);
@@ -40,7 +34,7 @@ program:
           program line '\n'
           {
             printBlock($2);
-            printf("\n");
+            printf("\nvalid statement\n");
           }
           |
           program error '\n'
@@ -100,9 +94,14 @@ void yyerror(char *s){
   fprintf(stderr, "%s\n", s);
 }
 
-int main(){
+void setup(){
   compileHeap = (struct AbstractBlock*) (malloc(100*sizeof(struct AbstractBlock)));
   compileHeapSize = 0;
+}
+
+void parseFile(){
+  setup();
+  yyin = fopen("example.txt", "r");
   yyparse();
-  return 0;
+  return;
 }
