@@ -7,5 +7,5 @@ bit typeOfA;
 bit typeOfB;
 */
 
-struct Block* compileHeap; //the heap used at compile time
+struct AbstractBlock* compileHeap; //the heap used at compile time
 unsigned compileHeapSize; //the size of the compile time heap
