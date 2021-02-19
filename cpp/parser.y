@@ -32,10 +32,6 @@
 program:
           |
           program line '\n'
-          {
-            printBlock($2);
-            printf("\nvalid statement\n");
-          }
           |
           program error '\n'
           {
