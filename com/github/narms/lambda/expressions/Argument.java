@@ -28,7 +28,7 @@ public class Argument extends Expression {
         return name;
         StringBuffer output = new StringBuffer();
         output.append((char)((id)%26+97));
-        for (int i = 0; i<(int)(id.longValue()/26D); i++){
+        for (int i = 0; i<((int)((id.longValue()%103)/26D)); i++){
             output.append('\'');
         }
         return output.toString();

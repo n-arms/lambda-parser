@@ -15,6 +15,8 @@ import com.github.narms.lambda.expressions.Variable;
 public class Parser {
     public static Deque<Expression> parse(Deque<Object> objects){
         Deque<Object> struct = new ArrayDeque<Object>();
+
+        //resolve if it is a combinator declaration
         Object headOfObjects = objects.peekFirst();
         objects.removeFirst();
         if (objects.peek() instanceof Token && ((Token)objects.peek()).getType().equals(TokenType.EQUAL)){
@@ -27,6 +29,9 @@ public class Parser {
         }else{
             objects.addFirst(headOfObjects);
         }
+
+        //resolve parentheses
+
         while (objects.size()>0){
             Object currentObj = objects.pop();
             if (currentObj instanceof Token){

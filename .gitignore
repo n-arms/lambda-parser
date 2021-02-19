@@ -8,3 +8,12 @@ classes/com/github/narms/lambda/parsing/*.class
 #ignore my bugfixing test file
 
 com/github/narms/lambda/Test.java
+
+#ignore all the generated files from lexer.l and parser.y
+cpp/y.tab.c
+cpp/y.tab.h
+cpp/lex.yy.c
+cpp/a.out
+
+#AGGGGGG .DS_Store
+.DS_Store

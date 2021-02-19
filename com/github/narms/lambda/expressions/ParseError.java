@@ -8,7 +8,7 @@ import java.util.Set;
 
 import com.github.narms.lambda.Token;
 
-public class Error extends Expression {
+public class ParseError extends Expression {
     /** 
      * class for compile-time errors
     */
@@ -16,13 +16,13 @@ public class Error extends Expression {
     private List<Object> failPoints;
     private Deque<Object> tokenLine;
     
-    public Error(Deque<Object> tokenLine, Object failPoint){
+    public ParseError(Deque<Object> tokenLine, Object failPoint){
         failPoints = new ArrayList<Object>();
         failPoints.add(failPoint);
         this.tokenLine = tokenLine;
     }
 
-    public Error(Deque<Object> tokenLine, List<Object> failPoints){
+    public ParseError(Deque<Object> tokenLine, List<Object> failPoints){
         this.failPoints = failPoints;
         this.tokenLine = tokenLine;
     }
