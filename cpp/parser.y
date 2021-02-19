@@ -6,7 +6,7 @@
 %}
 
 %start program
-%token DOT LAMBDA OPEN CLOSE UPPER LOWER
+%token DOT LAMBDA OPEN CLOSE UPPER LOWER LET IN
 
 %%
 
@@ -16,13 +16,21 @@ program:
           {
             printf("evaluated program line\n");
           }
-          ;
-line:     expr
+          |
+          program error '\n'
           {
-            //soon this will include let and letrecs
+            yyerrok;
           }
           ;
+line:     expr
+          |
+          LET block '\n' IN '\n' expr
+          ;
 arg:      LOWER;
+block:
+          |
+          block '\n' arg '=' expr
+          ;
 expr:     arg
           |
           OPEN expr expr CLOSE

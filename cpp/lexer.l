@@ -13,10 +13,6 @@
         yylval = yytext[0] - 'a';
         return (LOWER);
       }
-[A-Z] {
-        yylval = yytext[0] - 'A';
-        return (UPPER);
-      }
 \\    {
         return (LAMBDA);
       }
@@ -31,6 +27,19 @@
       }
 "\n"  {
         return ('\n');
+      }
+"="   {
+        return ('=');
+      }
+"LET" {
+        return (LET);
+      }
+"IN"  {
+        return (IN);
+      }
+[A-Z] {
+        yylval = yytext[0] - 'A';
+        return (UPPER);
       }
 
 %%
