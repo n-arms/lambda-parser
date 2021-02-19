@@ -4,7 +4,7 @@
   int yylex(void);
   void yyerror(char *);
 %}
-
+%token DOT LAMBDA OPEN CLOSE UPPER LOWER
 %%
 
 space: " ";
