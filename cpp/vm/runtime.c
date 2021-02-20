@@ -37,11 +37,23 @@ void buildHeap(unsigned heapSize){
 }
 
 int main(){
+  /*
   executable = fopen("../example.heap", "r");
   buildHeap(100);
   for (int i = 0; i<3; i++){
     printf("(%d: %d, %d)\n", (heap+i) -> type_, (heap+i) -> a_, (heap+i) -> b_);
   }
-  free(heap);
+  free(heap);*/
+  struct LinkedList l;
+  l.first_ = NULL;
+  push(&l, 3);
+  push(&l, 1);
+  push(&l, 4);
+  push(&l, 1);
+  push(&l, 5);
+  for (int i = 0; i<5; i++){
+    printf("%d\n", top(&l));
+    pop(&l);
+  }
   return 0;
 }
