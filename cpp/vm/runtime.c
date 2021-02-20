@@ -38,6 +38,8 @@ void buildHeap(unsigned heapSize){
       temp[count++] = (char) c;
     }
   }
+  temp[count] = '\0';
+  (heap+usedMemory) -> b_ = atoi(temp);
   usedMemory++;
   free(temp);
 }
@@ -88,7 +90,60 @@ unsigned copyApply(unsigned root, unsigned old, unsigned new){
   }
   return 0;
 }
-
+unsigned evaluate(unsigned root){
+  printf("evaluating at root %u\n", root);
+  switch ((heap+root) -> type_){
+    case 0:
+    printf("found arg with value %u\n", (root+heap) -> a_);
+    return root;
+    case 1:
+    printf("found application\n");
+    if ((((heap+root) -> a_)+heap) -> type_ == 2){
+      printf("found function on left side\n");
+      (heap+root) -> type_ = 3;
+      (heap+root) -> a_ = copyApply(((heap+root) -> a_ + heap) -> b_, ((heap+root) -> a_ + heap) -> a_, (heap+root) -> b_);
+      evaluate(root);
+      return root;
+    }else{
+      printf("missed function on ls, falling down tree\n");
+      evaluate((heap+root) -> a_);
+      return root;
+    }
+    break;
+    case 2:
+    printf("found lambda, returning\n");
+    return root;
+    case 3:
+    printf("found pointer\n");
+    evaluate((heap+root) -> a_);
+    return root;
+    break;
+  }
+  return -1;
+}
+void print(unsigned root){
+  switch ((heap+root) -> type_){
+    case 0:
+    printf("%d", (heap+root) -> a_);
+    break;
+    case 1:
+    printf("( ");
+    print((heap+root) -> a_);
+    printf(" ");
+    print((heap+root) -> b_);
+    printf(" )");
+    break;
+    case 2:
+    printf("|");
+    print((heap+root) -> a_);
+    printf(".");
+    print((heap+root) -> b_);
+    break;
+    case 3:
+    print((heap+root) -> a_);
+    break;
+  }
+}
 
 /*
   execution algorithm:
@@ -105,24 +160,18 @@ int main(){
   used.first_ = NULL;
   executable = fopen("../example.heap", "r");
   buildHeap(100);
-  for (int i = 0; i<8; i++){
-    printf("(%u: %u, %u)\n", (heap+i) -> type_, (heap+i) -> a_, (heap+i) -> b_);
-  }
   printf("\ncurrent memory used: %u\n", usedMemory);
-  unsigned one = getBlock(&freeList, &usedMemory);
-  (heap+one) -> type_ = 0;
-  (heap+one) -> a_ = 97;
-  unsigned two = getBlock(&freeList, &usedMemory);
-  (heap+two) -> type_ = 0;
-  (heap+two) -> a_ = 100;
-  printf("\ncurrent memory used: %u\n", usedMemory);
-  copyApply(2, one, two);
-
-
-  for (int i = 0; i<8; i++){
+  for (int i = 0; i<usedMemory; i++){
     printf("(%d: %d, %d)\n", (heap+i) -> type_, (heap+i) -> a_, (heap+i) -> b_);
   }
-  free(heap);
 
+  printf("%d\n", evaluate(6));
+  for (int i = 0; i<usedMemory; i++){
+    printf("(%d: %d, %d)\n", (heap+i) -> type_, (heap+i) -> a_, (heap+i) -> b_);
+  }
+
+
+
+  free(heap);
   return 0;
 }
