@@ -19,3 +19,14 @@ void push(struct LinkedList* l, unsigned u){
   l->first_ -> value_ = u;
   l->first_ -> next_ = oldFirst;
 }
+
+unsigned getBlock(struct LinkedList* free, unsigned* usedMemory){
+  if (free -> first_ != NULL){
+    unsigned output = top(free);
+    pop(free);
+    return output;
+  }else{
+    *usedMemory = *usedMemory + 1;
+    return (*usedMemory) -1;
+  }
+}
