@@ -20,6 +20,14 @@ void push(struct LinkedList* l, unsigned u){
   l->first_ -> next_ = oldFirst;
 }
 
+void addEnd(struct ListNode* a, struct ListNode* b){
+  if (a->next_ == NULL){
+    a->next_ = b;
+  }else{
+    addEnd(a->next_, b);
+  }
+}
+
 unsigned getBlock(struct LinkedList* free, unsigned* usedMemory){
   if (free -> first_ != NULL){
     unsigned output = top(free);

@@ -10,6 +10,7 @@ struct LinkedList{
 unsigned top(struct LinkedList* l);
 void pop(struct LinkedList* l);
 void push(struct LinkedList* l, unsigned u);
+void addEnd(struct ListNode* a, struct ListNode* b);
 
 struct Block{
   unsigned a_;

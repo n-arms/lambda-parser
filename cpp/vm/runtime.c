@@ -90,6 +90,25 @@ unsigned copyApply(unsigned root, unsigned old, unsigned new){
   }
   return 0;
 }
+struct ListNode* bound(unsigned root){
+  switch ((heap+root) -> type_){
+    case 0:
+    return NULL;
+    case 1:
+    struct ListNode* output = bound((heap+root) -> a_);
+    if (output != NULL){
+      addEnd(output, bound((heap+root) -> b_));
+    }
+    return output;
+    case 2:
+    struct ListNode* output = (struct ListNode*) (malloc(sizeof(struct ListNode)));
+    output -> value_ = ((heap+root) -> a_+heap) -> a_;
+    output -> next_ = bound((heap+root) -> b_);
+    return output;
+    case 3:
+    return bound((output+root) -> a_);
+  }
+}
 unsigned evaluate(unsigned root){
   printf("evaluating at root %u\n", root);
   switch ((heap+root) -> type_){
@@ -165,12 +184,12 @@ int main(){
     printf("(%d: %d, %d)\n", (heap+i) -> type_, (heap+i) -> a_, (heap+i) -> b_);
   }
 
-  printf("%d\n", evaluate(6));
+  printf("\n");
+  print(evaluate(usedMemory-1));
+  printf("\n\n");
   for (int i = 0; i<usedMemory; i++){
     printf("(%d: %d, %d)\n", (heap+i) -> type_, (heap+i) -> a_, (heap+i) -> b_);
   }
-
-
 
   free(heap);
   return 0;
