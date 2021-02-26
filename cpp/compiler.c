@@ -34,6 +34,7 @@ void pointArg(unsigned root, unsigned* scope){
 
 int main(){
   parseFile();
+  pointArg(compileHeapSize-1, (unsigned*)(malloc(26*sizeof(unsigned))));
 
   FILE *fp = fopen("example.heap", "w");
   fprintf(fp, "%d,%d,%d", (compileHeap) -> type_, (compileHeap) -> a_, (compileHeap) -> b_);
@@ -44,15 +45,11 @@ int main(){
 
   printBlock(compileHeapSize-1);
   printf("\n");
-  pointArg(compileHeapSize-1, (unsigned*)(malloc(26*sizeof(unsigned))));
+
   printf("printing heap with size %d\n", compileHeapSize);
   for (int i = 0; i<(compileHeapSize); i++){
     printf("%d: %d, %d\n", (compileHeap+i) -> type_, (compileHeap+i) -> a_, (compileHeap+i) -> b_);
   }
-  printBlock(compileHeapSize-1);
-  printf("\n");
-  (compileHeap+3) -> a_ = 98;
-  printBlock(2);
-  printf("\n");
+  //printBlock(compileHeapSize-1);
   return 0;
 }

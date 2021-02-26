@@ -130,7 +130,13 @@ unsigned evaluate(unsigned root){
     if ((((heap+root) -> a_)+heap) -> type_ == 2){
       printf("found function on left side\n");
       (heap+root) -> type_ = 3;
-      (heap+root) -> a_ = copyApply(((heap+root) -> a_ + heap) -> b_, ((heap+root) -> a_ + heap) -> a_, (heap+root) -> b_);
+      ((((heap+root) -> a_)+heap) -> a_ + heap) -> type_ = 3;
+      ((((heap+root) -> a_)+heap) -> a_ + heap) -> a_ = (heap+root) -> b_;
+      printf("printing after beta reduction\n");
+      print(root);
+      printf("\n");
+      //(heap+root) -> a_ = copyApply(((heap+root) -> a_ + heap) -> b_, ((heap+root) -> a_ + heap) -> a_, (heap+root) -> b_);
+      (heap+root) -> a_ = (((heap+root) -> a_) + heap) -> b_;
       evaluate(root);
       return root;
     }else{
