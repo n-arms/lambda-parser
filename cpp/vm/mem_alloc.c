@@ -28,13 +28,48 @@ void addEnd(struct ListNode* a, struct ListNode* b){
   }
 }
 
-unsigned getBlock(struct LinkedList* free, unsigned* usedMemory){
+unsigned getBlock(struct LinkedList* free, struct LinkedList* used, unsigned* usedMemory){
   if (free -> first_ != NULL){
     unsigned output = top(free);
     pop(free);
+    push(used, output);
     return output;
   }else{
     *usedMemory = *usedMemory + 1;
+    push(used, (*usedMemory)-1);
     return (*usedMemory) -1;
+  }
+}
+
+void mark(struct Block* heap, unsigned root, int prev){
+  if (prev == 0){
+    (root + heap) -> type_ |= (1<<7);
+  }else{
+    (root + heap) -> type_ &= ~(1<<7);
+  }
+  switch ((heap+root) -> type_){
+    case 0:
+    return;
+    case 1:
+    mark(heap, (heap+root) -> a_, prev);
+    mark(heap, (heap+root) -> b_, prev);
+    return;
+    case 2:
+    mark(heap, (heap+root) -> a_, prev);
+    mark(heap, (heap+root) -> b_, prev);
+    return;
+    case 3:
+    mark(heap, (heap+root) -> a_, prev);
+    return;
+  }
+}
+
+void garbageCollection(struct LinkedList* free, struct LinkedList* used, unsigned root, int prev, struct Block* heap){
+  mark(heap, root, prev);
+  struct ListNode* current = used -> first_;
+  while (current != NULL){
+    if (((current -> value_) >> 7) != prev){
+      
+    }
   }
 }

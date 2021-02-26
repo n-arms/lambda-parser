@@ -18,6 +18,6 @@ struct Block{
   unsigned short type_; //where the last bit represents the mark
 } ;
 
-void garbageCollection(struct LinkedList* free, struct LinkedList* used, unsigned root);
-unsigned getBlock(struct LinkedList* free, unsigned* usedMemory);
+void garbageCollection(struct LinkedList* free, struct LinkedList* used, unsigned root, int prev, struct Block* heap);
+unsigned getBlock(struct LinkedList* free, struct LinkedList* used, unsigned* usedMemory);
 void eval(FILE *fp);

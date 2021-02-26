@@ -15,11 +15,13 @@
       printf(" ");
       printBlock((compileHeap+head) -> b_);
       printf(" )");
-    }else{
+    }else if ((compileHeap+head) -> type_ == 2){
       printf("|");
       printBlock((compileHeap+head) -> a_);
       printf(".");
       printBlock((compileHeap+head) -> b_);
+    }else{
+      printBlock((compileHeap+head) -> a_);
     }
   }
 %}

@@ -31,6 +31,7 @@ void buildHeap(unsigned heapSize){
         cycle++;
       }else{
         (heap+usedMemory) -> b_ = atoi(temp);
+        push(&used, usedMemory);
         usedMemory++;
         cycle = 0;
       }
@@ -40,6 +41,7 @@ void buildHeap(unsigned heapSize){
   }
   temp[count] = '\0';
   (heap+usedMemory) -> b_ = atoi(temp);
+  push(&used, usedMemory);
   usedMemory++;
   free(temp);
 }
@@ -52,14 +54,14 @@ unsigned copyApply(unsigned root, unsigned old, unsigned new){
       return new;
     }else{
       printf("fail match (%u and %u)\n", (heap+old) -> a_, ((heap+root) -> a_));
-      unsigned output = getBlock(&freeList, &usedMemory);
+      unsigned output = getBlock(&freeList, &used, &usedMemory);
       (heap+output) -> type_ = 0;
       (heap+output) -> a_ = (root+heap) -> a_;
       return output;
     }
   }else if ((heap+root) -> type_ == 1){
     printf("found application while beta reducing\n");
-    unsigned output = getBlock(&freeList, &usedMemory);
+    unsigned output = getBlock(&freeList, &used, &usedMemory);
     (heap+output) -> type_ = 1;
     (heap+output) -> a_ = copyApply((heap+root) -> a_, old, new);
     (heap+output) -> b_ = copyApply((heap+root) -> b_, old, new);
@@ -68,14 +70,14 @@ unsigned copyApply(unsigned root, unsigned old, unsigned new){
     printf("found lambda while beta reducing\n");
     if ((heap+old) -> a_ != (((heap+root) -> a_)+heap) -> a_){
       printf("arg is not rebound\n");
-      unsigned output = getBlock(&freeList, &usedMemory);
+      unsigned output = getBlock(&freeList, &used, &usedMemory);
       (heap+output) -> type_ = 2;
       (heap+output) -> a_ = copyApply((heap+root) -> a_, old, new);
       (heap+output) -> b_ = copyApply((heap+root) -> b_, old, new);
       return output;
     }else{
       printf("arg is rebound\n");
-      unsigned output = getBlock(&freeList, &usedMemory);
+      unsigned output = getBlock(&freeList, &used, &usedMemory);
       (heap+output) -> type_ = 2;
       (heap+output) -> a_ = copyApply((heap+root) -> a_, 0xffffffffU, 0);
       (heap+output) -> b_ = copyApply((heap+root) -> b_, 0xffffffffU, 0);
@@ -83,34 +85,42 @@ unsigned copyApply(unsigned root, unsigned old, unsigned new){
     }
   }else if ((heap+root) -> type_ == 3){
     printf("found pointer while beta reducing\n");
-    unsigned output = getBlock(&freeList, &usedMemory);
+    unsigned output = getBlock(&freeList, &used, &usedMemory);
     (heap+output) -> type_ = 3;
     (heap+output) -> a_ = copyApply((heap+root) -> a_, old, new);
     return output;
   }
   return 0;
 }
-struct ListNode* bound(unsigned root){
+
+void print(unsigned root){
   switch ((heap+root) -> type_){
     case 0:
-    return NULL;
+    printf("%d", (heap+root) -> a_);
+    break;
     case 1:
-    struct ListNode* output = bound((heap+root) -> a_);
-    if (output != NULL){
-      addEnd(output, bound((heap+root) -> b_));
-    }
-    return output;
+    printf("( ");
+    print((heap+root) -> a_);
+    printf(" ");
+    print((heap+root) -> b_);
+    printf(" )");
+    break;
     case 2:
-    struct ListNode* output = (struct ListNode*) (malloc(sizeof(struct ListNode)));
-    output -> value_ = ((heap+root) -> a_+heap) -> a_;
-    output -> next_ = bound((heap+root) -> b_);
-    return output;
+    printf("|");
+    print((heap+root) -> a_);
+    printf(".");
+    print((heap+root) -> b_);
+    break;
     case 3:
-    return bound((output+root) -> a_);
+    print((heap+root) -> a_);
+    break;
   }
 }
+
 unsigned evaluate(unsigned root){
   printf("evaluating at root %u\n", root);
+  print(root);
+  printf("\n");
   switch ((heap+root) -> type_){
     case 0:
     printf("found arg with value %u\n", (root+heap) -> a_);
@@ -140,28 +150,14 @@ unsigned evaluate(unsigned root){
   }
   return -1;
 }
-void print(unsigned root){
-  switch ((heap+root) -> type_){
-    case 0:
-    printf("%d", (heap+root) -> a_);
-    break;
-    case 1:
-    printf("( ");
-    print((heap+root) -> a_);
-    printf(" ");
-    print((heap+root) -> b_);
-    printf(" )");
-    break;
-    case 2:
-    printf("|");
-    print((heap+root) -> a_);
-    printf(".");
-    print((heap+root) -> b_);
-    break;
-    case 3:
-    print((heap+root) -> a_);
-    break;
+
+void printList(struct LinkedList* l){
+  struct ListNode *i = l->first_;
+  while (i != NULL){
+    printf("%d ", i->value_);
+    i = i->next_;
   }
+  printf("\n");
 }
 
 /*
@@ -185,6 +181,8 @@ int main(){
   }
 
   printf("\n");
+  printList(&freeList);
+  printList(&used);
   print(evaluate(usedMemory-1));
   printf("\n\n");
   for (int i = 0; i<usedMemory; i++){
