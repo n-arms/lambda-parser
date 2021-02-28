@@ -45,52 +45,43 @@ void buildHeap(unsigned heapSize){
   usedMemory++;
   free(temp);
 }
-unsigned copyApply(unsigned root, unsigned old, unsigned new){
-  printf("beta reducing at index %u with old %u and new %u\n", root, old, new);
-  if ((heap+root) -> type_ == 0){
-    printf("found arg while beta reducing\n");
-    if ((heap+old) -> a_ == ((heap+root) -> a_)){
-      printf("match\n");
-      return new;
+
+unsigned nextNode(unsigned root){
+  if ((heap+root) -> type_ != 3){
+    return root;
+  }else{
+    return nextNode((heap+root) -> a_);
+  }
+}
+
+unsigned copy(unsigned root, unsigned old, unsigned new){
+  unsigned current = getBlock(&freeList, &used, &usedMemory);
+  (heap+current) -> type_ = (heap+root) -> type_;
+  switch ((heap+root) -> type_){
+    case 0:
+    (heap+current) -> a_ = (heap+root) -> a_;
+    return current;
+    case 1:
+    (heap+current) -> a_ = copy((heap+root) -> a_, old, new);
+    (heap+current) -> b_ = copy((heap+root) -> b_, old, new);
+    return current;
+    case 2:
+    (heap+current) -> a_ = copy((heap+root) -> a_, old, new);
+    (heap+current) -> b_ = copy((heap+root) -> b_, old, new);
+    return current;
+    case 3:
+    if ((heap+root) -> a_ == old){
+      (heap+current) -> a_ = new;
     }else{
-      printf("fail match (%u and %u)\n", (heap+old) -> a_, ((heap+root) -> a_));
-      unsigned output = getBlock(&freeList, &used, &usedMemory);
-      (heap+output) -> type_ = 0;
-      (heap+output) -> a_ = (root+heap) -> a_;
-      return output;
+      (heap+current) -> a_ = (heap+root) -> b_;
     }
-  }else if ((heap+root) -> type_ == 1){
-    printf("found application while beta reducing\n");
-    unsigned output = getBlock(&freeList, &used, &usedMemory);
-    (heap+output) -> type_ = 1;
-    (heap+output) -> a_ = copyApply((heap+root) -> a_, old, new);
-    (heap+output) -> b_ = copyApply((heap+root) -> b_, old, new);
-    return output;
-  }else if ((heap+root) -> type_ == 2){
-    printf("found lambda while beta reducing\n");
-    if ((heap+old) -> a_ != (((heap+root) -> a_)+heap) -> a_){
-      printf("arg is not rebound\n");
-      unsigned output = getBlock(&freeList, &used, &usedMemory);
-      (heap+output) -> type_ = 2;
-      (heap+output) -> a_ = copyApply((heap+root) -> a_, old, new);
-      (heap+output) -> b_ = copyApply((heap+root) -> b_, old, new);
-      return output;
-    }else{
-      printf("arg is rebound\n");
-      unsigned output = getBlock(&freeList, &used, &usedMemory);
-      (heap+output) -> type_ = 2;
-      (heap+output) -> a_ = copyApply((heap+root) -> a_, 0xffffffffU, 0);
-      (heap+output) -> b_ = copyApply((heap+root) -> b_, 0xffffffffU, 0);
-      return output;
-    }
-  }else if ((heap+root) -> type_ == 3){
-    printf("found pointer while beta reducing\n");
-    unsigned output = getBlock(&freeList, &used, &usedMemory);
-    (heap+output) -> type_ = 3;
-    (heap+output) -> a_ = copyApply((heap+root) -> a_, old, new);
-    return output;
+    return current;
   }
   return 0;
+}
+
+unsigned betaReduce(unsigned func, unsigned arg){
+  return copy((heap+func) -> b_, (heap+func) -> a_, arg);
 }
 
 void print(unsigned root){
@@ -121,27 +112,25 @@ unsigned evaluate(unsigned root){
   printf("evaluating at root %u\n", root);
   print(root);
   printf("\n");
+  unsigned left = nextNode((heap+root) -> a_);
   switch ((heap+root) -> type_){
     case 0:
     printf("found arg with value %u\n", (root+heap) -> a_);
     return root;
     case 1:
     printf("found application\n");
-    if ((((heap+root) -> a_)+heap) -> type_ == 2){
+    if ((left+heap) -> type_ == 2){
       printf("found function on left side\n");
       (heap+root) -> type_ = 3;
-      ((((heap+root) -> a_)+heap) -> a_ + heap) -> type_ = 3;
-      ((((heap+root) -> a_)+heap) -> a_ + heap) -> a_ = (heap+root) -> b_;
-      printf("printing after beta reduction\n");
+      (heap+root) -> a_ = betaReduce(left, (heap+root) -> b_);
       print(root);
       printf("\n");
-      //(heap+root) -> a_ = copyApply(((heap+root) -> a_ + heap) -> b_, ((heap+root) -> a_ + heap) -> a_, (heap+root) -> b_);
-      (heap+root) -> a_ = (((heap+root) -> a_) + heap) -> b_;
       evaluate(root);
       return root;
     }else{
       printf("missed function on ls, falling down tree\n");
       evaluate((heap+root) -> a_);
+      evaluate(root);
       return root;
     }
     break;
