@@ -49,19 +49,26 @@ program:
           ;
 line:     expr
           |
-          LET block '\n' IN '\n' expr
+          LET '\n' arg '=' expr '\n' IN '\n' expr
           {
+            (compileHeap+compileHeapSize) -> type_ = 0;
+            (compileHeap+compileHeapSize) -> a_ = $3;
+            compileHeapSize++;
 
+            (compileHeap+compileHeapSize) -> type_ = 2;
+            (compileHeap+compileHeapSize) -> a_ = compileHeapSize-1;
+            (compileHeap+compileHeapSize) -> b_ = $9;
+            compileHeapSize++;
+            (compileHeap+compileHeapSize) -> type_ = 1;
+            (compileHeap+compileHeapSize) -> a_ = compileHeapSize-1;
+            (compileHeap+compileHeapSize) -> b_ = $5;
+            compileHeapSize++;
           }
           ;
 arg:      LOWER
           {
             $$ = $1+97;
           };
-block:
-          |
-          block '\n' arg '=' expr
-          ;
 expr:     arg
           {
             (compileHeap+compileHeapSize) -> a_ = $1;

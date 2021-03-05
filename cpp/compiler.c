@@ -57,6 +57,5 @@ int main(){
   for (int i = 0; i<(compileHeapSize); i++){
     printf("%d: %d, %d\n", (compileHeap+i) -> type_, (compileHeap+i) -> a_, (compileHeap+i) -> b_);
   }
-  //printBlock(compileHeapSize-1);
   return 0;
 }
