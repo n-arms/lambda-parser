@@ -82,6 +82,9 @@ void print(unsigned root){
     break;
     case 5:
     break;
+    case 6:
+    printf("%d", (heap+root) -> a_);
+    break;
   }
 }
 
@@ -112,6 +115,8 @@ unsigned copy(unsigned root, unsigned old, unsigned new){
     case 4:
     return root;
     case 5:
+    return root;
+    case 6:
     return root;
   }
   return 0;
@@ -173,9 +178,13 @@ unsigned evalBlock(unsigned root){
       printf("found nested application, falling down chain\n");
       (heap+output) -> a_ = evalBlock((heap+root) -> a_);
       (heap+output) -> b_ = (heap+root) -> b_;
-      return evalBlock(output);
+      if (((heap+output) -> a_ + heap) -> type_ == 2){
+        return evalBlock(output);
+      }else{
+        (heap+output) -> b_ = evalBlock((heap+output) -> b_);
+        return output;
+      }
     }
-
     case 2: //abstr
     printf("found anstraction, returning\n");
     return root;
@@ -191,6 +200,10 @@ unsigned evalBlock(unsigned root){
 
     case 5: //null
     printf("found null, returning\n");
+    return root;
+
+    case 6:
+    printf("found integer, returning\n");
     return root;
 
     default:

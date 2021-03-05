@@ -25,14 +25,16 @@
     }else if ((compileHeap+head) -> type_ == 4){
       printf("%c", (char)(((compileHeap+head) -> a_ + compileHeap) -> a_));
       printBlock((compileHeap+head) -> b_);
-    }else{
+    }else if ((compileHeap+head) -> type_ == 5){
       return;
+    }else if ((compileHeap+head) -> type_ == 6){
+      printf("%d", (compileHeap+head) -> a_);
     }
   }
 %}
 
 %start program
-%token DOT LAMBDA OPEN CLOSE UPPER LOWER LET IN QUOTE
+%token DOT LAMBDA OPEN CLOSE UPPER LOWER LET IN QUOTE NUM
 
 %%
 
@@ -94,6 +96,14 @@ expr:     arg
             $$ = $2;
           }
           |
+          NUM
+          {
+            (compileHeap+compileHeapSize) -> type_ = 6;
+            (compileHeap+compileHeapSize) -> a_ = $1;
+            compileHeapSize++;
+            $$ = compileHeapSize-1;
+          }
+          |
           OPEN expr CLOSE
           {
             $$ = $2;
@@ -115,7 +125,6 @@ text:
             $$ = compileHeapSize-1;
           }
           ;
-
 
 %%
 void yyerror(char *s){
