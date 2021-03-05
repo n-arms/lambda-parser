@@ -41,6 +41,9 @@
         yylval = yytext[0] - 'A';
         return (UPPER);
       }
+"\""  {
+        return (QUOTE);
+      }
 
 %%
 

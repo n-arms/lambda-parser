@@ -52,12 +52,13 @@ unsigned getBlock(struct LinkedList* free, struct LinkedList* used, unsigned* us
   }
 }
 
-void mark(struct Block* heap, unsigned root, int prev){
+void mark (struct Block* heap, unsigned root, int prev){
   if (prev == 0){
-    (root + heap) -> type_ |= (1<<7);
+    (heap+root) -> type_ |= (unsigned short)(1<<15);
   }else{
-    (root + heap) -> type_ &= ~(1<<7);
+    (heap+root) -> type_ &=~((unsigned short)(1<<15));
   }
+
   switch ((heap+root) -> type_){
     case 0:
     return;
@@ -79,8 +80,8 @@ void garbageCollection(struct LinkedList* free, struct LinkedList* used, unsigne
   mark(heap, root, prev);
   struct ListNode* current = used -> first_;
   while (current != NULL){
-    if (((current -> value_) >> 7) != prev){
-
+    if (((current -> value_) >> 15) != prev){
+      
     }
   }
 }

@@ -20,14 +20,19 @@
       printBlock((compileHeap+head) -> a_);
       printf(".");
       printBlock((compileHeap+head) -> b_);
-    }else{
+    }else if ((compileHeap+head) -> type_ == 3){
       printBlock((compileHeap+head) -> a_);
+    }else if ((compileHeap+head) -> type_ == 4){
+      printf("%c", (char)(((compileHeap+head) -> a_ + compileHeap) -> a_));
+      printBlock((compileHeap+head) -> b_);
+    }else{
+      return;
     }
   }
 %}
 
 %start program
-%token DOT LAMBDA OPEN CLOSE UPPER LOWER LET IN
+%token DOT LAMBDA OPEN CLOSE UPPER LOWER LET IN QUOTE
 
 %%
 
@@ -43,6 +48,9 @@ program:
 line:     expr
           |
           LET block '\n' IN '\n' expr
+          {
+            
+          }
           ;
 arg:      LOWER
           {
@@ -51,6 +59,8 @@ arg:      LOWER
 block:
           |
           block '\n' arg '=' expr
+          |
+          block '\n' arg '=' string
           ;
 expr:     arg
           {
@@ -84,6 +94,28 @@ expr:     arg
           OPEN expr CLOSE
           {
             $$ = $2;
+          }
+          ;
+text:
+          {
+            (compileHeap+compileHeapSize) -> type_ = 5;
+            compileHeapSize++;
+            $$ = compileHeapSize-1;
+          }
+          |
+          arg text
+          {
+            (compileHeap+compileHeapSize) -> type_ = 4;
+            (compileHeap+compileHeapSize) -> a_ = $1;
+            (compileHeap+compileHeapSize) -> b_ = $2;
+            compileHeapSize++;
+            $$ = compileHeapSize-1;
+          }
+          ;
+
+string:   QUOTE text QUOTE
+          {
+            printf("found string\n");
           }
           ;
 

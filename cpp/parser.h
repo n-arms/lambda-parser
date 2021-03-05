@@ -13,7 +13,7 @@ struct AbstractBlock{
   unsigned a_;
   unsigned b_;
   unsigned char type_;
-  //let 0 be argument, 1 be application, 2 be abstraction, 3 be pointer
+  //let 0 be argument, 1 be application, 2 be abstraction, 3 be pointer, 4 be list, 5 be null
 } ;
 
 struct AbstractBlock* compileHeap; //the heap used at compile time
