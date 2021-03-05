@@ -143,9 +143,12 @@ unsigned evaluate(unsigned root){
 }
 
 unsigned evalBlock(unsigned root){
-  printf("evaluating block %d with %d memory used\n", root, usedMemory);
-  unsigned output = getBlock(&freeList, &used, &usedMemory, usedMemory);
+  printf("evaluating block %d: ", root);
+  print(root);
+  printf("\n");
+  unsigned output = getBlock(&freeList, &used, &usedMemory, heapSize);
   (heap+output) -> type_ = (heap+root) -> type_;
+  unsigned left = nextNode((heap+root) -> a_);
   switch ((heap+root) -> type_){
     case 0: //arg
     printf("found arg, returning\n");
@@ -153,9 +156,9 @@ unsigned evalBlock(unsigned root){
 
     case 1: //app
     printf("found application ");
-    if (((heap+root) -> a_ + heap) -> type_ == 3){
-      printf("found beta-reducable statement (returning)\n");
-      return betaReduce((heap+root) -> a_, (heap+root) -> b_);
+    if ((left + heap) -> type_ == 2){
+      printf("found beta-reducable statement, beta reducing\n");
+      return betaReduce(left, (heap+root) -> b_);
     }else{
       printf("found nested application, falling down chain\n");
       (heap+output) -> a_ = evalBlock((heap+root) -> a_);
@@ -212,10 +215,8 @@ int main(){
   buildHeap(1000);
 
   unsigned result = evalBlock(usedMemory-1);
-  /*printf("final value: \n");
   print(result);
-  printf("\nat pos %d\n\n", result);
-  printHeap();*/
+  printf("\n");
   free(heap);
   return 0;
 }

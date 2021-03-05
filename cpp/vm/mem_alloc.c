@@ -30,7 +30,8 @@ void addEnd(struct ListNode* a, struct ListNode* b){
 
 void segfault(){
   printf("SEGFAULT\n");
-  ext(1);
+  fflush(stdout);
+  exit(1);
 }
 
 unsigned getBlock(struct LinkedList* free, struct LinkedList* used, unsigned* usedMemory, unsigned heapSize){
