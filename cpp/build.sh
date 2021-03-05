@@ -2,4 +2,4 @@
 
 yacc -d parser.y
 lex lexer.l
-cc y.tab.c lex.yy.c
+cc y.tab.c lex.yy.c compiler.c

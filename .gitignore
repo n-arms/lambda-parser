@@ -14,6 +14,10 @@ cpp/y.tab.c
 cpp/y.tab.h
 cpp/lex.yy.c
 cpp/a.out
+cpp/vm/a.out
+
+#ignore the FILES THAT MY COMPILER GENERATED WOOOOO IT WORKED
+cpp/example.heap
 
 #AGGGGGG .DS_Store
 .DS_Store
