@@ -76,6 +76,12 @@ void print(unsigned root){
     case 3:
     print((heap+root) -> a_);
     break;
+    case 4:
+    printf("%c", (heap+root) -> a_);
+    print((heap+root) -> b_);
+    break;
+    case 5:
+    break;
   }
 }
 
@@ -103,6 +109,10 @@ unsigned copy(unsigned root, unsigned old, unsigned new){
       (heap+current) -> a_ = (heap+root) -> a_;
     }
     return current;
+    case 4:
+    return root;
+    case 5:
+    return root;
   }
   return 0;
 }
@@ -175,9 +185,17 @@ unsigned evalBlock(unsigned root){
     (heap+output) -> a_ = evalBlock((heap+root) -> a_);
     return output;
 
+    case 4: //string
+    printf("found string, returning\n");
+    return root;
+
+    case 5: //null
+    printf("found null, returning\n");
+    return root;
+
     default:
     printf("illegal type %d on evalBlock\n", (heap+root) -> type_);
-    return 4;
+    return 5;
   }
 }
 
@@ -218,7 +236,5 @@ int main(){
   print(result);
   printf("\n\n");
   printHeap();
-  printf("\n");
-  free(heap);
   return 0;
 }

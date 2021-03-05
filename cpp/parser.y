@@ -49,7 +49,7 @@ line:     expr
           |
           LET block '\n' IN '\n' expr
           {
-            
+
           }
           ;
 arg:      LOWER
@@ -59,8 +59,6 @@ arg:      LOWER
 block:
           |
           block '\n' arg '=' expr
-          |
-          block '\n' arg '=' string
           ;
 expr:     arg
           {
@@ -91,6 +89,11 @@ expr:     arg
             $$ = compileHeapSize-1;
           }
           |
+          QUOTE text QUOTE
+          {
+            $$ = $2;
+          }
+          |
           OPEN expr CLOSE
           {
             $$ = $2;
@@ -113,11 +116,6 @@ text:
           }
           ;
 
-string:   QUOTE text QUOTE
-          {
-            printf("found string\n");
-          }
-          ;
 
 %%
 void yyerror(char *s){

@@ -1,4 +1,1 @@
-LET
-  f = "fizz"
-IN
-  f
+((|a.|b.a "fizz") "buzz")
