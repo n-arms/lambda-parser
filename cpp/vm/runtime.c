@@ -10,14 +10,15 @@ struct LinkedList used;
 struct LinkedList freeList;
 //let 0 be argument, 1 be application, 2 be abstraction and 3 be pointer
 
-void buildHeap(unsigned heapSize){
+void buildHeap(unsigned size){
+  heapSize = size;
   int c;
   unsigned cycle = 0;
   char *temp = (char *) (malloc(10*sizeof(char)));
   unsigned count = 0;
 
   usedMemory = 0;
-  heap = (struct Block*) (malloc(heapSize * sizeof(struct Block)));
+  heap = (struct Block*) (malloc(size * sizeof(struct Block)));
 
   while ((c = fgetc(executable)) != EOF){
     if (((char)c) == ','){
@@ -54,36 +55,6 @@ unsigned nextNode(unsigned root){
   }
 }
 
-unsigned copy(unsigned root, unsigned old, unsigned new){
-  unsigned current = getBlock(&freeList, &used, &usedMemory);
-  (heap+current) -> type_ = (heap+root) -> type_;
-  switch ((heap+root) -> type_){
-    case 0:
-    (heap+current) -> a_ = (heap+root) -> a_;
-    return current;
-    case 1:
-    (heap+current) -> a_ = copy((heap+root) -> a_, old, new);
-    (heap+current) -> b_ = copy((heap+root) -> b_, old, new);
-    return current;
-    case 2:
-    (heap+current) -> a_ = copy((heap+root) -> a_, old, new);
-    (heap+current) -> b_ = copy((heap+root) -> b_, old, new);
-    return current;
-    case 3:
-    if ((heap+root) -> a_ == old){
-      (heap+current) -> a_ = new;
-    }else{
-      (heap+current) -> a_ = (heap+root) -> b_;
-    }
-    return current;
-  }
-  return 0;
-}
-
-unsigned betaReduce(unsigned func, unsigned arg){
-  return copy((heap+func) -> b_, (heap+func) -> a_, arg);
-}
-
 void print(unsigned root){
   switch ((heap+root) -> type_){
     case 0:
@@ -108,42 +79,103 @@ void print(unsigned root){
   }
 }
 
+unsigned copy(unsigned root, unsigned old, unsigned new){
+  unsigned current = getBlock(&freeList, &used, &usedMemory, heapSize);
+  (heap+current) -> type_ = (heap+root) -> type_;
+  switch ((heap+root) -> type_){
+    case 0:
+    (heap+current) -> a_ = (heap+root) -> a_;
+    return current;
+    case 1:
+    (heap+current) -> a_ = copy((heap+root) -> a_, old, new);
+    (heap+current) -> b_ = copy((heap+root) -> b_, old, new);
+    return current;
+    case 2:
+    (heap+current) -> a_ = copy((heap+root) -> a_, old, new);
+    (heap+current) -> b_ = copy((heap+root) -> b_, old, new);
+    return current;
+    case 3:
+    if ((heap+root) -> a_ == old){
+      printf("found matching pointer while beta reducing\n");
+      (heap+current) -> a_ = new;
+    }else{
+      printf("found non-matching pointer while beta reducing\n");
+      (heap+current) -> a_ = (heap+root) -> b_;
+    }
+    return current;
+  }
+  return 0;
+}
+
+unsigned betaReduce(unsigned func, unsigned arg){
+  unsigned output = copy((heap+func) -> b_, (heap+func) -> a_, arg);
+  printf("returning after beta reduction: ");
+  print(output);
+  printf("\n\n");
+  return output;
+}
+
 unsigned evaluate(unsigned root){
-  printf("evaluating at root %u\n", root);
-  print(root);
-  printf("\n");
   unsigned left = nextNode((heap+root) -> a_);
   switch ((heap+root) -> type_){
     case 0:
-    printf("found arg with value %u\n", (root+heap) -> a_);
-    return root;
+    return root; //found arg, returning up chain
     case 1:
-    printf("found application\n");
-    if ((left+heap) -> type_ == 2){
-      printf("found function on left side\n");
-      (heap+root) -> type_ = 3;
-      (heap+root) -> a_ = betaReduce(left, (heap+root) -> b_);
+    if ((left+heap) -> type_ == 2){ //the far left is a function
+      printf("before beta reduction: ");
       print(root);
       printf("\n");
-      evaluate(root);
-      return root;
+      unsigned output = betaReduce(left, (heap+root) -> b_);
+      (heap+root) -> type_ = 3;
+      (heap+root) -> a_ = output;
+      return evaluate(output);
     }else{
-      printf("missed function on ls, falling down tree\n");
-      evaluate((heap+root) -> a_);
-      evaluate(root);
-      return root;
+      (heap+root) -> a_ = evaluate((heap+root) -> a_);
+      return evaluate(root);
     }
     break;
     case 2:
-    printf("found lambda, returning\n");
     return root;
     case 3:
-    printf("found pointer\n");
-    evaluate((heap+root) -> a_);
-    return root;
-    break;
+    return evaluate((heap+root) -> a_);
   }
   return -1;
+}
+
+unsigned evalBlock(unsigned root){
+  printf("evaluating block %d with %d memory used\n", root, usedMemory);
+  unsigned output = getBlock(&freeList, &used, &usedMemory, usedMemory);
+  (heap+output) -> type_ = (heap+root) -> type_;
+  switch ((heap+root) -> type_){
+    case 0: //arg
+    printf("found arg, returning\n");
+    return root;
+
+    case 1: //app
+    printf("found application ");
+    if (((heap+root) -> a_ + heap) -> type_ == 3){
+      printf("found beta-reducable statement (returning)\n");
+      return betaReduce((heap+root) -> a_, (heap+root) -> b_);
+    }else{
+      printf("found nested application, falling down chain\n");
+      (heap+output) -> a_ = evalBlock((heap+root) -> a_);
+      (heap+output) -> b_ = (heap+root) -> b_;
+      return evalBlock(output);
+    }
+
+    case 2: //abstr
+    printf("found anstraction, returning\n");
+    return root;
+
+    case 3: //pointer
+    printf("found pointer, evaluating\n");
+    (heap+output) -> a_ = evalBlock((heap+root) -> a_);
+    return output;
+
+    default:
+    printf("illegal type %d on evalBlock\n", (heap+root) -> type_);
+    return 4;
+  }
 }
 
 void printList(struct LinkedList* l){
@@ -153,6 +185,14 @@ void printList(struct LinkedList* l){
     i = i->next_;
   }
   printf("\n");
+}
+
+void printHeap(){
+  for (int i = 0; i<usedMemory; i++){
+    printf("(%d: %d, %d): ", (heap+i) -> type_, (heap+i) -> a_, (heap+i) -> b_);
+    print(i);
+    printf("\n");
+  }
 }
 
 /*
@@ -169,21 +209,13 @@ int main(){
   freeList.first_ = NULL;
   used.first_ = NULL;
   executable = fopen("../example.heap", "r");
-  buildHeap(100);
-  printf("\ncurrent memory used: %u\n", usedMemory);
-  for (int i = 0; i<usedMemory; i++){
-    printf("(%d: %d, %d)\n", (heap+i) -> type_, (heap+i) -> a_, (heap+i) -> b_);
-  }
+  buildHeap(1000);
 
-  printf("\n");
-  printList(&freeList);
-  printList(&used);
-  print(evaluate(usedMemory-1));
-  printf("\n\n");
-  for (int i = 0; i<usedMemory; i++){
-    printf("(%d: %d, %d)\n", (heap+i) -> type_, (heap+i) -> a_, (heap+i) -> b_);
-  }
-
+  unsigned result = evalBlock(usedMemory-1);
+  /*printf("final value: \n");
+  print(result);
+  printf("\nat pos %d\n\n", result);
+  printHeap();*/
   free(heap);
   return 0;
 }

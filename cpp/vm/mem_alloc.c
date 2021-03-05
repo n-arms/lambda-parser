@@ -28,7 +28,17 @@ void addEnd(struct ListNode* a, struct ListNode* b){
   }
 }
 
-unsigned getBlock(struct LinkedList* free, struct LinkedList* used, unsigned* usedMemory){
+void segfault(){
+  printf("SEGFAULT\n");
+  ext(1);
+}
+
+unsigned getBlock(struct LinkedList* free, struct LinkedList* used, unsigned* usedMemory, unsigned heapSize){
+  if ((*usedMemory) >= heapSize){
+    segfault();
+    return 0;
+  }
+
   if (free -> first_ != NULL){
     unsigned output = top(free);
     pop(free);
@@ -69,7 +79,7 @@ void garbageCollection(struct LinkedList* free, struct LinkedList* used, unsigne
   struct ListNode* current = used -> first_;
   while (current != NULL){
     if (((current -> value_) >> 7) != prev){
-      
+
     }
   }
 }

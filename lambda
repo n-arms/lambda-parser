@@ -26,10 +26,18 @@ function check_build(){ #main file
   fi
 }
 
+function compile_run_heap() {
+  cd cpp
+  ./a.out
+  cd vm
+  ./a.out
+}
+
 case $# in
   0)
-    run_shell "false"
-    exit 0
+    #run_shell "false"
+    #exit 0
+    compile_run_heap
     ;;
   1)
     if [[ "$1" == "$continue_on_error" ]]; then

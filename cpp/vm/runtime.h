@@ -19,5 +19,5 @@ struct Block{
 } ;
 
 void garbageCollection(struct LinkedList* free, struct LinkedList* used, unsigned root, int prev, struct Block* heap);
-unsigned getBlock(struct LinkedList* free, struct LinkedList* used, unsigned* usedMemory);
+unsigned getBlock(struct LinkedList* free, struct LinkedList* used, unsigned* usedMemory, unsigned heapSize);
 void eval(FILE *fp);
