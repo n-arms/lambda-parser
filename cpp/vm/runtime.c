@@ -100,7 +100,7 @@ unsigned copy(unsigned root, unsigned old, unsigned new){
       (heap+current) -> a_ = new;
     }else{
       printf("found non-matching pointer while beta reducing\n");
-      (heap+current) -> a_ = (heap+root) -> b_;
+      (heap+current) -> a_ = (heap+root) -> a_;
     }
     return current;
   }
@@ -216,6 +216,8 @@ int main(){
 
   unsigned result = evalBlock(usedMemory-1);
   print(result);
+  printf("\n\n");
+  printHeap();
   printf("\n");
   free(heap);
   return 0;
