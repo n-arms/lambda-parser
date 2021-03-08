@@ -7,6 +7,15 @@ struct LinkedList{
   struct ListNode* first_;
 };
 
+
+struct HashBucket{
+  struct HashBucket* next_;
+};
+
+struct HashMap{
+  struct HashBucket* table_;
+}
+
 unsigned top(struct LinkedList* l);
 void pop(struct LinkedList* l);
 void push(struct LinkedList* l, unsigned u);

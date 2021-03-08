@@ -58,7 +58,7 @@ unsigned nextNode(unsigned root){
 void print(unsigned root){
   switch ((heap+root) -> type_){
     case 0:
-    printf("%d", (heap+root) -> a_);
+    printf("%c", (char)(heap+root) -> a_);
     break;
     case 1:
     printf("( ");
@@ -173,12 +173,12 @@ unsigned evalBlock(unsigned root){
     printf("found application ");
     if ((left + heap) -> type_ == 2){
       printf("found beta-reducable statement, beta reducing\n");
-      return betaReduce(left, (heap+root) -> b_);
+      return evalBlock(betaReduce(left, (heap+root) -> b_));
     }else{
       printf("found nested application, falling down chain\n");
       (heap+output) -> a_ = evalBlock((heap+root) -> a_);
       (heap+output) -> b_ = (heap+root) -> b_;
-      if (((heap+output) -> a_ + heap) -> type_ == 2){
+      if ((nextNode((heap+output) -> a_) + heap) -> type_ == 2){
         return evalBlock(output);
       }else{
         (heap+output) -> b_ = evalBlock((heap+output) -> b_);
@@ -247,7 +247,6 @@ int main(){
 
   unsigned result = evalBlock(usedMemory-1);
   print(result);
-  printf("\n\n");
-  printHeap();
+  printf("\n");
   return 0;
 }

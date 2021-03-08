@@ -49,13 +49,5 @@ int main(){
     fprintf(fp, ",%d,%d,%d", (compileHeap+i) -> type_, (compileHeap+i) -> a_, (compileHeap+i) -> b_);
   }
   fclose(fp);
-
-  printBlock(compileHeapSize-1);
-  printf("\n");
-
-  printf("printing heap with size %d\n", compileHeapSize);
-  for (int i = 0; i<(compileHeapSize); i++){
-    printf("%d: %d, %d\n", (compileHeap+i) -> type_, (compileHeap+i) -> a_, (compileHeap+i) -> b_);
-  }
   return 0;
 }

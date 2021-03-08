@@ -1,4 +1,1 @@
-LET
-x=3
-IN
-x
+(|a.(a |a.|b.a) |a.(a a))
