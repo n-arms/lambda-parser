@@ -1,5 +1,22 @@
 package main
 
+/*
+===== mem_alloc.go =====
+
+To be used to implement GC and memory allocation
+
+types
+- block
+
+constantss
+- block kind enum
+
+functionss
+- kindString
+- getBlock
+
+*/
+
 const (
   nullBlock = byte(iota)
   numberBlock = byte(iota)
@@ -34,4 +51,9 @@ type block struct{
   kind byte
   left uint32
   right uint32
+}
+
+func getBlock(r *runtime) uint32{
+  r.usedMemory ++
+  return r.usedMemory - 1
 }

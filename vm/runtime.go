@@ -1,7 +1,25 @@
 package main
 
+/*
+===== runtime.go =====
+
+To be used to implement the evaluation and reduction elements of the runtime
+
+types
+- runtime
+
+functions
+- getKind
+- getLeft
+- getRight
+- set
+- new
+- blockString
+*/
+
 import (
   "fmt"
+  "strconv"
 )
 
 type runtime struct {
@@ -26,11 +44,34 @@ func (r *runtime) set(root uint32, kind byte, left uint32, right uint32) uint32 
   return root
 }
 
+func (r *runtime) new(kind byte, left uint32, right uint32) uint32 {
+  return r.set(getBlock(r), kind, left, right)
+}
+
+func (r *runtime) blockString(root uint32) string {
+  switch r.heap[root].kind {
+  case nullBlock:
+    return "NULL"
+  case numberBlock:
+    return strconv.FormatUint(uint64(r.getLeft(root)), 10)
+  case argumentBlock:
+    return string(r.getLeft(root))
+  case lambdaBlock:
+    return "|" + r.blockString(r.getLeft(root)) + "." + r.blockString(r.getRight(root))
+  case applicationBlock:
+    return "("+r.blockString(r.getLeft(root)) + " " + r.blockString(r.getRight(root)) + ")"
+  case pointerBlock:
+    return r.blockString(r.getLeft(root))
+  case listBlock:
+    return r.blockString(r.getLeft(root)) + ":" + r.blockString(r.getRight(root))
+  }
+  return ""
+}
 
 func main() {
   r := runtime{heap: make([]block, 10), usedMemory: 0}
-  r.set(0, argumentBlock, 97, 0)
-  r.set(1, argumentBlock, 98, 0)
-  r.set(2, applicationBlock, 0, 1)
-  fmt.Println(kindString(r.getKind(2)))
+  r.new(argumentBlock, 97, 0)
+  r.new(argumentBlock, 98, 0)
+  r.new(applicationBlock, 0, 1)
+  fmt.Println(r.blockString(2))
 }
