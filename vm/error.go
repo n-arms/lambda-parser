@@ -32,6 +32,11 @@ func (e *errorLog) add(err lambdaError, blocking bool) {
   }
 }
 
+func (e *errorLog) fatal(err lambdaError) {
+  e.errors = append(e.errors, err)
+  panic(e.dump())
+}
+
 func (e *errorLog) dump() string {
   var output string
   for index, value := range e.errors {
@@ -60,14 +65,14 @@ type vmError struct {
   blocking bool
 }
 
-func (v *vmError) isBlocking() bool {
+func (v vmError) isBlocking() bool {
   return v.blocking
 }
 
-func (v *vmError) getTitle() string {
+func (v vmError) getTitle() string {
   return v.title
 }
 
-func (v *vmError) String() string {
+func (v vmError) String() string {
   return v.title + "\n" + v.desc
 }

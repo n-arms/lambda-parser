@@ -40,6 +40,18 @@ func (r *runtime) getRight(root uint32) uint32 {
   return r.heap[root].right
 }
 
+func (r *runtime) setKind(root uint32, kind byte) {
+  r.heap[root].kind = kind
+}
+
+func (r *runtime) setLeft(root uint32, value uint32) {
+  r.heap[root].left = value
+}
+
+func (r *runtime) setRight(root uint32, value uint32) {
+  r.heap[root].right = value
+}
+
 func (r *runtime) set(root uint32, kind byte, left uint32, right uint32) uint32 {
   r.heap[root] = block{kind: kind, left: left, right: right}
   return root
@@ -70,5 +82,6 @@ func (r *runtime) blockString(root uint32) string {
 }
 
 func main() {
-  fmt.Println("123")
+  r := newRuntime("../cpp/example.heap", 100)
+  fmt.Println(r.blockString(r.usedMemory-1))
 }
