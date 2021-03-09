@@ -25,6 +25,7 @@ import (
 type runtime struct {
   heap []block
   usedMemory uint32
+  errors errorLog
 }
 
 func (r *runtime) getKind(root uint32) byte {

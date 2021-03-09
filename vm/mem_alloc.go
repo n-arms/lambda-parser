@@ -11,7 +11,7 @@ types
 constantss
 - block kind enum
 
-functionss
+functions
 - kindString
 - getBlock
 
