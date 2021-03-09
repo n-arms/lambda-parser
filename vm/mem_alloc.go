@@ -20,6 +20,7 @@ import (
   "io/ioutil"
   "strings"
   "strconv"
+  "sync"
 )
 
 const (
@@ -64,6 +65,9 @@ func getBlock(r *runtime) uint32{
 }
 
 func newRuntime(heapFile string, heapSize uint32) *runtime {
+  var wg sync.WaitGroup
+  wg.Add(3)
+
   convertKind := map[string]string {
     "0": "2",
     "1": "4",
@@ -74,36 +78,49 @@ func newRuntime(heapFile string, heapSize uint32) *runtime {
     "6": "1",
   }
 
-
   r := runtime{heap: make([]block, heapSize)}
   data, err := ioutil.ReadFile(heapFile)
   if err != nil {
     r.errors.fatal(vmError{title: "heap FNF", desc: "heap file was not at specified path", blocking: true})
   }
 
-  checkHeap := func(err error, pos int){
-    if err != nil {
-      r.errors.add(vmError{title: "illegal heap", desc: "error in heap at field: "+strconv.FormatInt(int64(pos), 10),  blocking: false}, false)
-    }
-  }
-
   csv := strings.Split(string(data), ",")
-  for i, value := range csv {
-    if i%3 == 0 {
-      parsed, err := strconv.ParseUint(convertKind[strings.TrimSpace(value)], 10, 8)
+
+  go func(){
+    for i := 0; i < len(csv); i += 3 {
+      parsed, err := strconv.ParseUint(convertKind[csv[i]], 10, 8)
       r.usedMemory++
       r.setKind(uint32(i/3), byte(parsed))
-      checkHeap(err, i)
-    }else if i%3 == 1 {
-      parsed, err := strconv.ParseUint(value, 10, 32)
-      r.setLeft(uint32(i/3), uint32(parsed))
-      checkHeap(err, i)
-    }else {
-      parsed, err := strconv.ParseUint(value, 10, 32)
-      r.setRight(uint32(i/3), uint32(parsed))
-      checkHeap(err, i)
+      if err != nil {
+        r.errors.add(vmError{title: "illegal heap kind", desc: "error in heap at field: "+strconv.FormatInt(int64(i), 10)}, false)
+      }
     }
-  }
+    wg.Done()
+  }()
+
+  go func(){
+    for i := 1; i < len(csv); i += 3 {
+      parsed, err := strconv.ParseUint(csv[i], 10, 8)
+      r.setLeft(uint32(i/3), uint32(parsed))
+      if err != nil {
+        r.errors.add(vmError{title: "illegal heap left", desc: "error in heap at field: "+strconv.FormatInt(int64(i), 10)}, false)
+      }
+    }
+    wg.Done()
+  }()
+
+  go func(){
+    for i := 2; i < len(csv); i += 3 {
+      parsed, err := strconv.ParseUint(csv[i], 10, 8)
+      r.setRight(uint32(i/3), uint32(parsed))
+      if err != nil {
+        r.errors.add(vmError{title: "illegal heap right", desc: "error in heap at field: "+strconv.FormatInt(int64(i), 10)}, false)
+      }
+    }
+    wg.Done()
+  }()
+
+  wg.Wait()
   r.errors.check()
   return &r
 }
