@@ -69,9 +69,5 @@ func (r *runtime) blockString(root uint32) string {
 }
 
 func main() {
-  r := runtime{heap: make([]block, 10), usedMemory: 0}
-  r.new(argumentBlock, 97, 0)
-  r.new(argumentBlock, 98, 0)
-  r.new(applicationBlock, 0, 1)
-  fmt.Println(r.blockString(2))
+  fmt.Println("123")
 }
