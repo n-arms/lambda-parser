@@ -82,6 +82,6 @@ func (r *runtime) blockString(root uint32) string {
 }
 
 func main() {
-  r := newRuntime("../cpp/example.heap", 100)
+  r := newRuntime("../cpp/example.hea", 100)
   fmt.Println(r.blockString(r.usedMemory-1))
 }

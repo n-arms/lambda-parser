@@ -33,6 +33,16 @@ const (
   listBlock = byte(iota)
 )
 
+var convertKind = map[string]string {
+  "0": "2",
+  "1": "4",
+  "2": "3",
+  "3": "5",
+  "4": "6",
+  "5": "0",
+  "6": "1",
+}
+
 func kindString(kind byte) string {
   switch kind {
   case nullBlock:
@@ -65,20 +75,10 @@ func getBlock(r *runtime) uint32{
 }
 
 func newRuntime(heapFile string, heapSize uint32) *runtime {
+  r := runtime{heap: make([]block, heapSize)}
   var wg sync.WaitGroup
   wg.Add(3)
 
-  convertKind := map[string]string {
-    "0": "2",
-    "1": "4",
-    "2": "3",
-    "3": "5",
-    "4": "6",
-    "5": "0",
-    "6": "1",
-  }
-
-  r := runtime{heap: make([]block, heapSize)}
   data, err := ioutil.ReadFile(heapFile)
   if err != nil {
     r.errors.fatal(vmError{title: "heap FNF", desc: "heap file was not at specified path", blocking: true})
@@ -92,7 +92,7 @@ func newRuntime(heapFile string, heapSize uint32) *runtime {
       r.usedMemory++
       r.setKind(uint32(i/3), byte(parsed))
       if err != nil {
-        r.errors.add(vmError{title: "illegal heap kind", desc: "error in heap at field: "+strconv.FormatInt(int64(i), 10)}, false)
+        r.errors.add(vmError{title: "illegal heap kind", desc: "error in heap at field: "+strconv.FormatInt(int64(i), 10)})
       }
     }
     wg.Done()
@@ -103,7 +103,7 @@ func newRuntime(heapFile string, heapSize uint32) *runtime {
       parsed, err := strconv.ParseUint(csv[i], 10, 8)
       r.setLeft(uint32(i/3), uint32(parsed))
       if err != nil {
-        r.errors.add(vmError{title: "illegal heap left", desc: "error in heap at field: "+strconv.FormatInt(int64(i), 10)}, false)
+        r.errors.add(vmError{title: "illegal heap left", desc: "error in heap at field: "+strconv.FormatInt(int64(i), 10)})
       }
     }
     wg.Done()
@@ -114,7 +114,7 @@ func newRuntime(heapFile string, heapSize uint32) *runtime {
       parsed, err := strconv.ParseUint(csv[i], 10, 8)
       r.setRight(uint32(i/3), uint32(parsed))
       if err != nil {
-        r.errors.add(vmError{title: "illegal heap right", desc: "error in heap at field: "+strconv.FormatInt(int64(i), 10)}, false)
+        r.errors.add(vmError{title: "illegal heap right", desc: "error in heap at field: "+strconv.FormatInt(int64(i), 10)})
       }
     }
     wg.Done()

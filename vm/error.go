@@ -19,22 +19,22 @@ functions
 
 import (
   "strconv"
+  "os"
+  "fmt"
 )
 
 type errorLog struct {
   errors []lambdaError
 }
 
-func (e *errorLog) add(err lambdaError, blocking bool) {
+func (e *errorLog) add(err lambdaError) {
   e.errors = append(e.errors, err)
-  if blocking && err.isBlocking() {
-    panic(e.dump())
-  }
 }
 
 func (e *errorLog) fatal(err lambdaError) {
   e.errors = append(e.errors, err)
-  panic(e.dump())
+  fmt.Println(e.dump())
+  os.Exit(1)
 }
 
 func (e *errorLog) dump() string {
@@ -48,7 +48,8 @@ func (e *errorLog) dump() string {
 func (e *errorLog) check(){
   for _, value := range e.errors {
     if value.isBlocking() {
-      panic(e.dump())
+      fmt.Println(e.dump())
+      os.Exit(1)
     }
   }
 }
