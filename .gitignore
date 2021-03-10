@@ -24,3 +24,4 @@ cpp/example.heap
 
 #ignore the generated files from go build
 vm/vm
+vm/main/main

@@ -1,4 +1,4 @@
-package main
+package run
 
 /*
 ===== error.go =====
@@ -40,17 +40,24 @@ func (e *errorLog) fatal(err lambdaError) {
 func (e *errorLog) dump() string {
   var output string
   for index, value := range e.errors {
-    output = output + "error " + strconv.Itoa(index+1) + "\n" + value.String()
+    output = output + "error " + strconv.Itoa(index+1) + "\n" + value.String() + "\n\n"
   }
   return output
 }
 
-func (e *errorLog) check(){
+func (e *errorLog) checkBlocking(){
   for _, value := range e.errors {
     if value.isBlocking() {
       fmt.Println(e.dump())
       os.Exit(1)
     }
+  }
+}
+
+func (e *errorLog) check(){
+  if len(e.errors) > 0 {
+    fmt.Println(e.dump())
+    os.Exit(1)
   }
 }
 

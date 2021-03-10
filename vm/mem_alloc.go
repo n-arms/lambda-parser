@@ -1,4 +1,4 @@
-package main
+package run
 
 /*
 ===== mem_alloc.go =====
@@ -69,13 +69,13 @@ type block struct{
   right uint32
 }
 
-func getBlock(r *runtime) uint32{
+func getBlock(r *Runtime) uint32{
   r.usedMemory ++
   return r.usedMemory - 1
 }
 
-func newRuntime(heapFile string, heapSize uint32) *runtime {
-  r := runtime{heap: make([]block, heapSize)}
+func NewRuntime(heapFile string, heapSize uint32) *Runtime {
+  r := Runtime{heap: make([]block, heapSize)}
   var wg sync.WaitGroup
   wg.Add(3)
 
