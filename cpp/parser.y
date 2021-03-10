@@ -73,6 +73,7 @@ expr:     arg
           {
             (compileHeap+compileHeapSize) -> a_ = $1;
             (compileHeap+compileHeapSize) -> type_ = 0;
+            (compileHeap+compileHeapSize) -> b_ = 0;
             compileHeapSize++;
             $$ = compileHeapSize-1;
           }
@@ -90,6 +91,7 @@ expr:     arg
           {
             (compileHeap+compileHeapSize) -> type_ = 0;
             (compileHeap+compileHeapSize) -> a_ = $2;
+            (compileHeap+compileHeapSize) -> b_ = 0;
             compileHeapSize++;
             (compileHeap+compileHeapSize) -> type_ = 2;
             (compileHeap+compileHeapSize) -> a_ = compileHeapSize-1;
@@ -107,6 +109,7 @@ expr:     arg
           {
             (compileHeap+compileHeapSize) -> type_ = 6;
             (compileHeap+compileHeapSize) -> a_ = $1;
+            (compileHeap+compileHeapSize) -> b_ = 0;
             compileHeapSize++;
             $$ = compileHeapSize-1;
           }

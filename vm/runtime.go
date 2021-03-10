@@ -19,6 +19,7 @@ functions
 
 import (
   "strconv"
+  "fmt"
 )
 
 type Runtime struct {
@@ -67,7 +68,7 @@ func (r *Runtime) new(kind byte, left uint32, right uint32) uint32 {
   return r.set(getBlock(r), kind, left, right)
 }
 
-func (r *Runtime) getRoot() uint32 {
+func (r *Runtime) GetRoot() uint32 {
   return r.root
 }
 
@@ -116,4 +117,56 @@ func (r *Runtime) String() string {
   }
 
   return string(output)
+}
+
+func (r *Runtime) eval(root uint32) uint32 {
+  switch r.getKind(root) {
+  case nullBlock:
+    return root
+  case numberBlock:
+    return root
+  case argumentBlock:
+    return root
+  case lambdaBlock:
+    return root
+  case applicationBlock:
+    if r.getKind(r.getLeft(root)) == lambdaBlock {
+      r.setKind(root, pointerBlock)
+      r.setLeft(r.getLeft(root), r.betaReduce(r.getLeft(root), r.getRight(root)))
+      return root
+    }else {
+      r.setLeft(r.getLeft(root), r.eval(r.getLeft(root)))
+      if r.getKind(r.getLeft(root)) == lambdaBlock {
+        return r.eval(root)
+      }
+      return root
+    }
+  case pointerBlock:
+    r.setLeft(r.getLeft(root), r.eval(r.getLeft(root)))
+    return r.getLeft(root)
+  case listBlock:
+    return root
+  }
+  r.errors.fatal(vmError{title: "Illegal Kind during runtime evaluation", desc: "Found kind "+strconv.FormatInt(int64(r.getKind(root)), 10) + " at position "+strconv.FormatUint(uint64(root), 10), blocking: true})
+  return 0
+}
+
+func (r *Runtime) betaReduce(function uint32, arg uint32) uint32 {
+  return 0
+}
+
+func (r *Runtime) copy(root uint32) uint32 {
+  return 0
+}
+
+func (r *Runtime) Run() {
+  r.root = r.eval(r.root)
+}
+
+func (r *Runtime) GetHeap() []string {
+  output := make([]string, len(r.heap))
+  for index, _ := range r.heap {
+    output = append(output, kindString(r.getKind(uint32(index)))+fmt.Sprintf(": {%d, %d}", r.getLeft(uint32(index)), r.getRight(uint32(index))))
+  }
+  return output
 }
