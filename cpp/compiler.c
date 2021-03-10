@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include "parser.h"
 #include "y.tab.h"
-#include "vm/runtime.h"
 
 /*
   let an unsigned* be a "hashmap" of sorts where the index is the value from 0-25 of a given char and the unsigned value is the value

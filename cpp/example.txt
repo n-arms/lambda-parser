@@ -1,1 +1,1 @@
-(|a.a b)
+"once upon a time"

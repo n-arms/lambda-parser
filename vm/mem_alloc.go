@@ -70,8 +70,20 @@ type block struct{
 }
 
 func getBlock(r *Runtime) uint32{
-  r.usedMemory ++
-  return r.usedMemory - 1
+  if len(r.freeMemory) == 0 {
+    r.usedMemory ++
+    return r.usedMemory - 1
+  }
+
+  var output uint32
+
+  for pos, _ := range r.freeMemory {
+    // best method i can think of to get any abitrary element from a map
+    output = pos
+    break
+  }
+  delete(r.freeMemory, output)
+  return output
 }
 
 func NewRuntime(heapFile string, heapSize uint32) *Runtime {
@@ -122,5 +134,6 @@ func NewRuntime(heapFile string, heapSize uint32) *Runtime {
 
   wg.Wait()
   r.errors.check()
+  r.root = r.usedMemory - 1
   return &r
 }

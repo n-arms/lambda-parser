@@ -125,8 +125,12 @@ text:
           |
           arg text
           {
-            (compileHeap+compileHeapSize) -> type_ = 4;
+            (compileHeap+compileHeapSize) -> type_ = 0;
             (compileHeap+compileHeapSize) -> a_ = $1;
+            compileHeapSize++;
+
+            (compileHeap+compileHeapSize) -> type_ = 4;
+            (compileHeap+compileHeapSize) -> a_ = compileHeapSize-1;
             (compileHeap+compileHeapSize) -> b_ = $2;
             compileHeapSize++;
             $$ = compileHeapSize-1;

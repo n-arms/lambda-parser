@@ -7,5 +7,5 @@ import (
 
 func main() {
   r := run.NewRuntime("../../cpp/example.heap", 100)
-  fmt.Println(r.BlockString(4))
+  fmt.Println(r)
 }
