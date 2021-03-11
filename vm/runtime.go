@@ -120,6 +120,7 @@ func (r *Runtime) String() string {
 }
 
 func (r *Runtime) eval(root uint32) uint32 {
+  fmt.Println("evaluating at root", root, "with type", kindString(r.getKind(root)))
   switch r.getKind(root) {
   case nullBlock:
     return root
@@ -153,8 +154,13 @@ func (r *Runtime) eval(root uint32) uint32 {
 
 func (r *Runtime) betaReduce(function uint32, arg uint32) uint32 {
   fmt.Printf("beta reducing at %d with arg %d\n", function, arg)
-  funcCopy, _ := r.copy(r.getRight(function), make(map[uint32]uint32))
-  r.setLeft(r.getLeft(funcCopy), arg)
+  argBlock := getBlock(r)
+  r.setKind(argBlock, pointerBlock)
+  r.setLeft(argBlock, arg)
+  var scope = map[uint32]uint32 {
+    r.getLeft(function): argBlock,
+  }
+  funcCopy, _ := r.copy(r.getRight(function), scope)
   fmt.Println(r.BlockString(funcCopy))
   return funcCopy
 }
@@ -226,8 +232,8 @@ func (r *Runtime) copy(root uint32, scope map[uint32]uint32) (newRoot uint32, ne
 }
 
 func (r *Runtime) Run() {
-  //r.root = r.eval(r.root)
-  r.root, _ = r.copy(r.root, make(map[uint32]uint32))
+  r.root = r.eval(r.root)
+  //r.root, _ = r.copy(r.root, make(map[uint32]uint32))
 }
 
 func (r *Runtime) GetHeap() []string {
