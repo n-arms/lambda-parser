@@ -130,6 +130,7 @@ text:
           {
             (compileHeap+compileHeapSize) -> type_ = 0;
             (compileHeap+compileHeapSize) -> a_ = $1;
+            (compileHeap+compileHeapSize) -> b_ = 0;
             compileHeapSize++;
 
             (compileHeap+compileHeapSize) -> type_ = 4;

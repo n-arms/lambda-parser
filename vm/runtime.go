@@ -132,17 +132,17 @@ func (r *Runtime) eval(root uint32) uint32 {
   case applicationBlock:
     if r.getKind(r.getLeft(root)) == lambdaBlock {
       r.setKind(root, pointerBlock)
-      r.setLeft(r.getLeft(root), r.betaReduce(r.getLeft(root), r.getRight(root)))
+      r.setLeft(root, r.betaReduce(r.getLeft(root), r.getRight(root)))
       return root
     }else {
-      r.setLeft(r.getLeft(root), r.eval(r.getLeft(root)))
+      r.setLeft(root, r.eval(r.getLeft(root)))
       if r.getKind(r.getLeft(root)) == lambdaBlock {
         return r.eval(root)
       }
       return root
     }
   case pointerBlock:
-    r.setLeft(r.getLeft(root), r.eval(r.getLeft(root)))
+    r.setLeft(root, r.eval(r.getLeft(root)))
     return r.getLeft(root)
   case listBlock:
     return root
@@ -152,15 +152,82 @@ func (r *Runtime) eval(root uint32) uint32 {
 }
 
 func (r *Runtime) betaReduce(function uint32, arg uint32) uint32 {
-  return 0
+  fmt.Printf("beta reducing at %d with arg %d\n", function, arg)
+  funcCopy, _ := r.copy(r.getRight(function), make(map[uint32]uint32))
+  r.setLeft(r.getLeft(funcCopy), arg)
+  fmt.Println(r.BlockString(funcCopy))
+  return funcCopy
 }
 
-func (r *Runtime) copy(root uint32) uint32 {
-  return 0
+func (r *Runtime) copyAppliLambda(root uint32, scope map[uint32]uint32, newBlock uint32) (newRoot uint32, newScope map[uint32]uint32) {
+  /*
+  1. check if the left value is in the scope
+  2. if it is, use a pointer to that
+  3. if it isnt do a copy on the left value, and set the value in the scope to that
+  4. repeat on right side
+  5. use the resulting scope as the return value, and use the same newBlock that was passed
+  */
+
+  var ls uint32
+  var rs uint32
+
+  if val, ok := scope[r.getLeft(root)]; ok {
+    r.setLeft(newBlock, val)
+  }else {
+    ls, scope = r.copy(r.getLeft(root), scope)
+    scope[r.getLeft(root)] = ls
+    r.setLeft(newBlock, ls)
+  }
+
+  if val, ok := scope[r.getRight(root)]; ok {
+    r.setRight(newBlock, val)
+  }else {
+    rs, scope = r.copy(r.getRight(root), scope)
+    scope[r.getRight(root)] = rs
+    r.setRight(newBlock, rs)
+  }
+
+  return newBlock, scope
+}
+
+func (r *Runtime) copy(root uint32, scope map[uint32]uint32) (newRoot uint32, newScope map[uint32]uint32) {
+  newBlock := getBlock(r)
+  r.setKind(newBlock, r.getKind(root))
+  r.setLeft(newBlock, r.getLeft(root))
+
+  switch r.getKind(root) {
+  case nullBlock:
+    return newBlock, scope
+  case numberBlock:
+    return newBlock, scope
+  case argumentBlock:
+    fmt.Println("copying argument, returning")
+    return newBlock, scope
+  case lambdaBlock:
+    return r.copyAppliLambda(root, scope, newBlock)
+  case applicationBlock:
+    return r.copyAppliLambda(root, scope, newBlock)
+  case pointerBlock:
+    fmt.Print("copying pointer: ")
+    if _, ok := scope[r.getLeft(root)]; ok {
+      fmt.Println("setting from scope")
+      r.setLeft(newBlock, scope[r.getLeft(root)])
+      return newBlock, scope
+    }
+    fmt.Println("copying new pointer to scope")
+    scope[r.getLeft(root)], scope = r.copy(r.getLeft(root), scope)
+    r.setLeft(newBlock, scope[r.getLeft(root)])
+    return newBlock, scope
+  case listBlock:
+    return root, scope
+  }
+  r.errors.fatal(vmError{title: "Illegal Kind during runtime evaluation", desc: "Found kind "+strconv.FormatInt(int64(r.getKind(root)), 10) + " at position "+strconv.FormatUint(uint64(root), 10), blocking: true})
+  return 0, scope
 }
 
 func (r *Runtime) Run() {
-  r.root = r.eval(r.root)
+  //r.root = r.eval(r.root)
+  r.root, _ = r.copy(r.root, make(map[uint32]uint32))
 }
 
 func (r *Runtime) GetHeap() []string {
