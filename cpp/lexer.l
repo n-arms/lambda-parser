@@ -50,6 +50,12 @@
           yylval = atoi(yytext);
           return (NUM);
         }
+":"     {
+          return (':');
+        }
+"[]"    {
+          return (NIL);
+        }
 
 %%
 

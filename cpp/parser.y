@@ -34,8 +34,9 @@
 %}
 
 %left ' '
+%right ':'
 %start program
-%token DOT LAMBDA OPEN CLOSE UPPER LOWER LET IN QUOTE NUM
+%token DOT LAMBDA OPEN CLOSE UPPER LOWER LET IN QUOTE NUM NIL
 
 
 %%
@@ -83,7 +84,7 @@ expr:       arg
             expr ' ' expr
             {
               (compileHeap+compileHeapSize) -> type_ = 1;
-              (compileHeap+compileHeapSize) -> a_ = $2;
+              (compileHeap+compileHeapSize) -> a_ = $1;
               (compileHeap+compileHeapSize) -> b_ = $3;
               compileHeapSize++;
               $$ = compileHeapSize-1;
@@ -120,10 +121,17 @@ expr:       arg
             {
               $$ = $2;
             }
+            |
+            OPEN list CLOSE
+            {
+              $$ = $2;
+            }
             ;
 text:
             {
               (compileHeap+compileHeapSize) -> type_ = 5;
+              (compileHeap+compileHeapSize) -> a_ = 0;
+              (compileHeap+compileHeapSize) -> b_ = 0;
               compileHeapSize++;
               $$ = compileHeapSize-1;
             }
@@ -142,7 +150,24 @@ text:
               $$ = compileHeapSize-1;
             }
             ;
-
+list:       NIL
+            {
+              (compileHeap+compileHeapSize) -> type_ = 5;
+              (compileHeap+compileHeapSize) -> a_ = 0;
+              (compileHeap+compileHeapSize) -> b_ = 0;
+              compileHeapSize++;
+              $$ = compileHeapSize-1;
+            }
+            |
+            expr ':' list
+            {
+              (compileHeap+compileHeapSize) -> type_ = 4;
+              (compileHeap+compileHeapSize) -> a_ = $1;
+              (compileHeap+compileHeapSize) -> b_ = $3;
+              compileHeapSize++;
+              $$ = compileHeapSize-1;
+            }
+            ;
 
 %%
 void yyerror(char *s){
