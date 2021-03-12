@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include "parser.h"
 #include "y.tab.h"
-#include "vm/runtime.h"
 
 /*
   let an unsigned* be a "hashmap" of sorts where the index is the value from 0-25 of a given char and the unsigned value is the value
@@ -49,14 +48,5 @@ int main(){
     fprintf(fp, ",%d,%d,%d", (compileHeap+i) -> type_, (compileHeap+i) -> a_, (compileHeap+i) -> b_);
   }
   fclose(fp);
-
-  printBlock(compileHeapSize-1);
-  printf("\n");
-
-  printf("printing heap with size %d\n", compileHeapSize);
-  for (int i = 0; i<(compileHeapSize); i++){
-    printf("%d: %d, %d\n", (compileHeap+i) -> type_, (compileHeap+i) -> a_, (compileHeap+i) -> b_);
-  }
-  //printBlock(compileHeapSize-1);
   return 0;
 }

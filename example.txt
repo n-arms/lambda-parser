@@ -1,7 +1,0 @@
-P=λnfa.(n (λgh.(h (g f))) (λu.a) (λu.u))
-Y=λf.((λx.f(x x)) (λx.f(x x)))
-T=λfa.f (f (f a)))
-Z=λn.(n (λxab.b) (λab.a))
-M=λmnfa.(m (n f) a)
-F=λns.(Z n) (λfa.(f a)) (M (n) (s (P n)))
-F T

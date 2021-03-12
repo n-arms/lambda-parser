@@ -1,3 +1,6 @@
+## WIP
+There is a functional legacy lambda interpreter in java, however please note that it is **deprecated** and will see no more work done on it. As of right now, this project has been steered towards a compiler, which can be found on the cpp branch.
+
 # Lambda Calculus Interpreter
 This repository is a complete interpreter for classical untyped lambda calculus. It can work line by line via a bash shell, or interpret whole files on lambda calculus statements.
 
@@ -11,7 +14,7 @@ To interpret a file, run ```./lambda <filename>``` while in the root.\
 By default when an error is found, it ends the interpreter session or stops executing the rest of the program. To supress this behaviour add the ```-g``` flag.
 
 ## Classical Untyped Lambda Calculus
-Lambda calculus is a method of representing pure functions. In lambda calculus, the only primitive types are functions. 
+Lambda calculus is a method of representing pure functions. In lambda calculus, the only primitive types are functions.
 
 ### Function Definitions
 Functions are defined in the form ```λ<argument>.<return>```\

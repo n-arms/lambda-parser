@@ -21,3 +21,7 @@ cpp/example.heap
 
 #AGGGGGG .DS_Store
 .DS_Store
+
+#ignore the generated files from go build
+vm/vm
+vm/main/main
