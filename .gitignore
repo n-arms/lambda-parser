@@ -1,14 +1,3 @@
-#ignore the .class files in the build path
-
-classes/com/github/narms/lambda/*.class
-classes/com/github/narms/lambda/frontend/*.class
-classes/com/github/narms/lambda/expressions/*.class
-classes/com/github/narms/lambda/parsing/*.class
-
-#ignore my bugfixing test file
-
-com/github/narms/lambda/Test.java
-
 #ignore all the generated files from lexer.l and parser.y
 cpp/y.tab.c
 cpp/y.tab.h
