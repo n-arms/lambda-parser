@@ -126,6 +126,13 @@ expr:       arg
             {
               $$ = $2;
             }
+            |
+            OPEN operator expr ' ' expr CLOSE
+            {
+              (compileHeap+$2) -> a_ = $3;
+              (compileHeap+$2) -> b_ = $5;
+              $$ = $2;
+            }
             ;
 text:
             {
@@ -168,6 +175,24 @@ list:       NIL
               $$ = compileHeapSize-1;
             }
             ;
+operator:   '+'
+            {
+              (compileHeap+compileHeapSize) -> type_ = 16;
+              compileHeapSize++;
+              $$ = compileHeapSize-1;
+            }
+            |
+            '*'
+            {
+              (compileHeap+compileHeapSize) -> type_ = 18;
+              compileHeapSize++;
+              $$ = compileHeapSize-1;
+            }
+            ;
+/*whitespace:
+            |
+            whitespace ' '
+            ;*/
 
 %%
 void yyerror(char *s){

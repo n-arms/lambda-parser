@@ -101,6 +101,14 @@ func (r *Runtime) BlockString(root uint32) string {
     return r.BlockString(r.getLeft(root))
   case listBlock:
     return r.BlockString(r.getLeft(root)) + ":" + r.BlockString(r.getRight(root))
+  case additionBlock:
+    return "+" + r.BlockString(r.getLeft(root)) + r.BlockString(r.getRight(root))
+  case subtractionBlock:
+    return "-" + r.BlockString(r.getLeft(root)) + r.BlockString(r.getRight(root))
+  case multiplicationBlock:
+    return "*" + r.BlockString(r.getLeft(root)) + r.BlockString(r.getRight(root))
+  case divisionBlock:
+    return "/" + r.BlockString(r.getLeft(root)) + r.BlockString(r.getRight(root))
   }
   return ""
 }
@@ -156,6 +164,14 @@ func (r *Runtime) eval(root uint32) uint32 {
     r.setLeft(root, r.eval(r.getLeft(root)))
     return r.getLeft(root)
   case listBlock:
+    return root
+  case additionBlock:
+    return root
+  case multiplicationBlock:
+    return root
+  case subtractionBlock:
+    return root
+  case divisionBlock:
     return root
   }
   r.errors.fatal(vmError{title: "Illegal Kind during runtime evaluation", desc: "Found kind "+strconv.FormatInt(int64(r.getKind(root)), 10) + " at position "+strconv.FormatUint(uint64(root), 10), blocking: true})
@@ -229,6 +245,14 @@ func (r *Runtime) copy(root uint32, scope map[uint32]uint32) (newRoot uint32, ne
     r.setLeft(newBlock, scope[r.getLeft(root)])
     return newBlock, scope
   case listBlock:
+    return root, scope
+  case additionBlock:
+    return root, scope
+  case multiplicationBlock:
+    return root, scope
+  case divisionBlock:
+    return root, scope
+  case subtractionBlock:
     return root, scope
   }
   r.errors.fatal(vmError{title: "Illegal Kind during runtime evaluation", desc: "Found kind "+strconv.FormatInt(int64(r.getKind(root)), 10) + " at position "+strconv.FormatUint(uint64(root), 10), blocking: true})
