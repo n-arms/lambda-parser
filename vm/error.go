@@ -37,6 +37,12 @@ func (e *errorLog) fatal(err lambdaError) {
   os.Exit(1)
 }
 
+func (e *errorLog) segFault(pos uint32) {
+  fmt.Println("SEGFAULT: 11 (went past max heap size of",pos,")")
+  fmt.Println(e.dump())
+  os.Exit(1)
+}
+
 func (e *errorLog) dump() string {
   var output string
   for index, value := range e.errors {

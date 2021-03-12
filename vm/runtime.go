@@ -33,6 +33,8 @@ type Runtime struct {
   errors errorLog
   //the point of entry for the heap
   root uint32
+  //the amount of memory allocated for the heap: going over this causes a segfault
+  maxMemory uint32
 }
 
 func (r *Runtime) getKind(root uint32) byte {
@@ -74,7 +76,14 @@ func (r *Runtime) GetRoot() uint32 {
 
 func (r *Runtime) setRoot(root uint32) {
   r.root = root
+}
+
+func (r *Runtime) nextNonPointer(root uint32) uint32 {
+  if r.getKind(root) != pointerBlock {
+    return root
   }
+  return r.nextNonPointer(r.getLeft(root))
+}
 
 func (r *Runtime) BlockString(root uint32) string {
   switch r.heap[root].kind {
@@ -102,8 +111,8 @@ func (r *Runtime) String() string {
     output = append(output, byte(value))
   }
   output = append(output, '\n')
-  for _, value := range r.heap {
-    for _, char := range kindString(value.kind)+" "+strconv.FormatUint(uint64(value.left), 10)+", "+strconv.FormatUint(uint64(value.right), 10)+"\n" {
+  for i, value := range r.heap {
+    for _, char := range strconv.FormatInt(int64(i), 10)+": "+kindString(value.kind)+" "+strconv.FormatUint(uint64(value.left), 10)+", "+strconv.FormatUint(uint64(value.right), 10)+"\n" {
       output = append(output, byte(char))
     }
   }
@@ -134,10 +143,15 @@ func (r *Runtime) eval(root uint32) uint32 {
     if r.getKind(r.getLeft(root)) == lambdaBlock {
       r.setKind(root, pointerBlock)
       r.setLeft(root, r.betaReduce(r.getLeft(root), r.getRight(root)))
-      return root
+      return r.eval(root)
     }else {
+      fmt.Println("non lambda as leftside")
       r.setLeft(root, r.eval(r.getLeft(root)))
+      r.setLeft(root, r.nextNonPointer(r.getLeft(root)))
+      r.setRight(root, r.nextNonPointer(r.getRight(root)))
+      fmt.Println("left side kind after evaluation and pointer compression", r.getKind(r.getLeft(root)))
       if r.getKind(r.getLeft(root)) == lambdaBlock {
+        fmt.Println("evaluating leftside")
         return r.eval(root)
       }
       return root

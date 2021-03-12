@@ -71,6 +71,9 @@ type block struct{
 
 func getBlock(r *Runtime) uint32{
   if len(r.freeMemory) == 0 {
+    if r.usedMemory == r.maxMemory {
+      r.errors.segFault(r.maxMemory)
+    }
     r.usedMemory ++
     return r.usedMemory - 1
   }
@@ -87,7 +90,7 @@ func getBlock(r *Runtime) uint32{
 }
 
 func NewRuntime(heapFile string, heapSize uint32) *Runtime {
-  r := Runtime{heap: make([]block, heapSize)}
+  r := Runtime{heap: make([]block, heapSize), maxMemory: heapSize}
   var wg sync.WaitGroup
   wg.Add(3)
 

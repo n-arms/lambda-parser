@@ -9,5 +9,7 @@ func main() {
   r := run.NewRuntime("../../cpp/example.heap", 20)
   fmt.Println(r)
   r.Run()
+  fmt.Println("new root:", r.GetRoot())
   fmt.Println(r)
+
 }
