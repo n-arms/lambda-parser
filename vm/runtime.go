@@ -129,7 +129,6 @@ func (r *Runtime) String() string {
 }
 
 func (r *Runtime) eval(root uint32) uint32 {
-  fmt.Println("evaluating at root", root, "with type", kindString(r.getKind(root)))
   switch r.getKind(root) {
   case nullBlock:
     return root
@@ -145,13 +144,10 @@ func (r *Runtime) eval(root uint32) uint32 {
       r.setLeft(root, r.betaReduce(r.getLeft(root), r.getRight(root)))
       return r.eval(root)
     }else {
-      fmt.Println("non lambda as leftside")
       r.setLeft(root, r.eval(r.getLeft(root)))
       r.setLeft(root, r.nextNonPointer(r.getLeft(root)))
       r.setRight(root, r.nextNonPointer(r.getRight(root)))
-      fmt.Println("left side kind after evaluation and pointer compression", r.getKind(r.getLeft(root)))
       if r.getKind(r.getLeft(root)) == lambdaBlock {
-        fmt.Println("evaluating leftside")
         return r.eval(root)
       }
       return root
@@ -167,7 +163,6 @@ func (r *Runtime) eval(root uint32) uint32 {
 }
 
 func (r *Runtime) betaReduce(function uint32, arg uint32) uint32 {
-  fmt.Printf("beta reducing at %d with arg %d\n", function, arg)
   argBlock := getBlock(r)
   r.setKind(argBlock, pointerBlock)
   r.setLeft(argBlock, arg)
@@ -175,7 +170,6 @@ func (r *Runtime) betaReduce(function uint32, arg uint32) uint32 {
     r.getLeft(function): argBlock,
   }
   funcCopy, _ := r.copy(r.getRight(function), scope)
-  fmt.Println(r.BlockString(funcCopy))
   return funcCopy
 }
 
@@ -221,20 +215,16 @@ func (r *Runtime) copy(root uint32, scope map[uint32]uint32) (newRoot uint32, ne
   case numberBlock:
     return newBlock, scope
   case argumentBlock:
-    fmt.Println("copying argument, returning")
     return newBlock, scope
   case lambdaBlock:
     return r.copyAppliLambda(root, scope, newBlock)
   case applicationBlock:
     return r.copyAppliLambda(root, scope, newBlock)
   case pointerBlock:
-    fmt.Print("copying pointer: ")
     if _, ok := scope[r.getLeft(root)]; ok {
-      fmt.Println("setting from scope")
       r.setLeft(newBlock, scope[r.getLeft(root)])
       return newBlock, scope
     }
-    fmt.Println("copying new pointer to scope")
     scope[r.getLeft(root)], scope = r.copy(r.getLeft(root), scope)
     r.setLeft(newBlock, scope[r.getLeft(root)])
     return newBlock, scope

@@ -6,10 +6,9 @@ import (
 )
 
 func main() {
-  r := run.NewRuntime("../../cpp/example.heap", 20)
+  r := run.NewRuntime("../../cpp/example.heap", 50)
   fmt.Println(r)
   r.Run()
   fmt.Println("new root:", r.GetRoot())
   fmt.Println(r)
-
 }
