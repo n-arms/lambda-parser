@@ -41,7 +41,6 @@ void pointArg(unsigned root, unsigned* scope, unsigned char* used){
 int main(){
   parseFile();
   pointArg(compileHeapSize-1, (unsigned*)(malloc(26*sizeof(unsigned))), (unsigned char*)(malloc(26*sizeof(unsigned char))));
-
   FILE *fp = fopen("example.heap", "w");
   fprintf(fp, "%d,%d,%d", (compileHeap) -> type_, (compileHeap) -> a_, (compileHeap) -> b_);
   for (int i = 1; i<(compileHeapSize); i++){

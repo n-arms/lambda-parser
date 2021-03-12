@@ -7,7 +7,9 @@
 
 %%
 
-" " ;
+" "     {
+          return ' ';
+        }
 
 [a-z]   {
           yylval = yytext[0] - 'a';
