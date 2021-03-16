@@ -129,9 +129,15 @@ expr:       arg
             |
             OPEN operator expr ' ' expr CLOSE
             {
-              (compileHeap+$2) -> a_ = $3;
-              (compileHeap+$2) -> b_ = $5;
-              $$ = $2;
+              (compileHeap+compileHeapSize) -> type_ = 1;
+              (compileHeap+compileHeapSize) -> a_ = $2;
+              (compileHeap+compileHeapSize) -> b_ = $3;
+              compileHeapSize++;
+              (compileHeap+compileHeapSize) -> type_ = 1;
+              (compileHeap+compileHeapSize) -> a_ = compileHeapSize-1;
+              (compileHeap+compileHeapSize) -> b_ = $5;
+              compileHeapSize++;
+              $$ = compileHeapSize-1;
             }
             ;
 text:
@@ -189,11 +195,6 @@ operator:   '+'
               $$ = compileHeapSize-1;
             }
             ;
-/*whitespace:
-            |
-            whitespace ' '
-            ;*/
-
 %%
 void yyerror(char *s){
   fprintf(stderr, "%s\n", s);
