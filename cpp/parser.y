@@ -188,9 +188,23 @@ operator:   '+'
               $$ = compileHeapSize-1;
             }
             |
+            '-'
+            {
+              (compileHeap+compileHeapSize) -> type_ = 17;
+              compileHeapSize++;
+              $$ = compileHeapSize-1;
+            }
+            |
             '*'
             {
               (compileHeap+compileHeapSize) -> type_ = 18;
+              compileHeapSize++;
+              $$ = compileHeapSize-1;
+            }
+            |
+            '/'
+            {
+              (compileHeap+compileHeapSize) -> type_ = 19;
               compileHeapSize++;
               $$ = compileHeapSize-1;
             }

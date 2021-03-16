@@ -102,13 +102,13 @@ func (r *Runtime) BlockString(root uint32) string {
   case listBlock:
     return r.BlockString(r.getLeft(root)) + ":" + r.BlockString(r.getRight(root))
   case additionBlock:
-    return "+" + r.BlockString(r.getLeft(root)) + r.BlockString(r.getRight(root))
+    return "+"
   case subtractionBlock:
-    return "-" + r.BlockString(r.getLeft(root)) + r.BlockString(r.getRight(root))
+    return "-"
   case multiplicationBlock:
-    return "*" + r.BlockString(r.getLeft(root)) + r.BlockString(r.getRight(root))
+    return "*"
   case divisionBlock:
-    return "/" + r.BlockString(r.getLeft(root)) + r.BlockString(r.getRight(root))
+    return "/"
   }
   return ""
 }
@@ -136,6 +136,46 @@ func (r *Runtime) String() string {
   return string(output)
 }
 
+func (r *Runtime) evalOp(root uint32){
+  if r.getKind(root) == applicationBlock && r.getKind(r.getLeft(root)) == applicationBlock {
+    reduce := func(){
+      r.setRight(root, r.eval(r.getRight(root)))
+      r.setRight(r.getLeft(root), r.eval(r.getRight(r.getLeft(root))))
+    }
+    isValid := func() bool{
+      return r.getKind(r.getRight(root)) == numberBlock && r.getKind(r.getRight(r.getLeft(root))) == numberBlock
+    }
+    switch r.getKind(r.getLeft(r.getLeft(root))) {
+    case additionBlock:
+      reduce()
+      if isValid() {
+        r.setKind(root, numberBlock)
+        r.setLeft(root, r.getLeft(r.getRight(r.getLeft(root))) + r.getLeft(r.getRight(root)))
+      }
+    case multiplicationBlock:
+      reduce()
+      if isValid() {
+        r.setKind(root, numberBlock)
+        r.setLeft(root, r.getLeft(r.getRight(r.getLeft(root))) * r.getLeft(r.getRight(root)))
+      }
+    case subtractionBlock:
+      reduce()
+      if isValid() {
+        r.setKind(root, numberBlock)
+        r.setLeft(root, r.getLeft(r.getRight(r.getLeft(root))) - r.getLeft(r.getRight(root)))
+      }
+    case divisionBlock:
+      reduce()
+      if isValid() {
+        r.setKind(root, numberBlock)
+        r.setLeft(root, r.getLeft(r.getRight(r.getLeft(root))) / r.getLeft(r.getRight(root)))
+      }
+    default:
+      return
+    }
+  }
+}
+
 func (r *Runtime) eval(root uint32) uint32 {
   switch r.getKind(root) {
   case nullBlock:
@@ -147,6 +187,10 @@ func (r *Runtime) eval(root uint32) uint32 {
   case lambdaBlock:
     return root
   case applicationBlock:
+    r.evalOp(root)
+    if r.getKind(root) != applicationBlock {
+      return root
+    }
     if r.getKind(r.getLeft(root)) == lambdaBlock {
       r.setKind(root, pointerBlock)
       r.setLeft(root, r.betaReduce(r.getLeft(root), r.getRight(root)))

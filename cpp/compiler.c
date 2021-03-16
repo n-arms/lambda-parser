@@ -43,7 +43,11 @@ void pointArg(unsigned root, unsigned* scope, unsigned char* used){
     return;
     case 16: //addition
     return;
+    case 17: //subtraction
+    return;
     case 18: //multiplication
+    return;
+    case 19: //divison
     return;
   }
 }
