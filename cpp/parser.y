@@ -104,11 +104,18 @@ expr:       arg
               $$ = $2;
             }
             |
+            operator
+            {
+              $$ = $1;
+            }
+            ;
+            /*
+            |
             OPEN operator expr ' ' expr CLOSE
             {
               $$ = newBlock(1, newBlock(1, $2, $3), $5);
             }
-            ;
+            ;*/
 text:
             {
               $$ = newBlock(5, 0, 0);
