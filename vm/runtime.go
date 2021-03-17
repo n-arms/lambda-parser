@@ -99,6 +99,11 @@ func (r *Runtime) BlockString(root uint32) string {
     return r.BlockString(r.getLeft(root))
   case listBlock:
     return r.BlockString(r.getLeft(root)) + ":" + r.BlockString(r.getRight(root))
+  case booleanBlock:
+    if r.getLeft(root) == 0 {
+      return "false"
+    }
+    return "true"
   }
   return kindString(r.getKind(root))
 }
@@ -185,6 +190,21 @@ func (r *Runtime) evalOp(root uint32){
   }
 }
 
+func (r *Runtime) evalIf(root uint32) {
+  if r.getKind(r.getLeft(root)) == ifBlock {
+    r.setRight(root, r.eval(r.getRight(root)))
+    if r.getKind(r.getRight(root)) != booleanBlock {
+      return
+    }
+    temp := r.new(argumentBlock, 97, 0)
+    if r.getLeft(r.getRight(root)) == 1 {
+      r.set(root, lambdaBlock, temp, r.new(lambdaBlock, r.new(argumentBlock, 98, 0), r.new(pointerBlock, temp, 0)))
+    }else{
+      r.set(root, lambdaBlock, r.new(argumentBlock, 98, 0), r.new(lambdaBlock, temp, r.new(pointerBlock, temp, 0)))
+    }
+  }
+}
+
 func (r *Runtime) eval(root uint32) uint32 {
   switch r.getKind(root) {
   case nullBlock:
@@ -200,6 +220,7 @@ func (r *Runtime) eval(root uint32) uint32 {
     if r.getKind(root) != applicationBlock {
       return root
     }
+    r.evalIf(root)
     if r.getKind(r.getLeft(root)) == lambdaBlock {
       r.setKind(root, pointerBlock)
       r.setLeft(root, r.betaReduce(r.getLeft(root), r.getRight(root)))
@@ -218,6 +239,8 @@ func (r *Runtime) eval(root uint32) uint32 {
     return r.getLeft(root)
   case listBlock:
     return root
+  case booleanBlock:
+    return root
   case additionBlock:
     return root
   case multiplicationBlock:
@@ -229,6 +252,8 @@ func (r *Runtime) eval(root uint32) uint32 {
   case equalityBlock:
     return root
   case moduloBlock:
+    return root
+  case ifBlock:
     return root
   }
   r.errors.fatal(vmError{title: "Illegal Kind during runtime evaluation", desc: "Found kind "+strconv.FormatInt(int64(r.getKind(root)), 10) + " at position "+strconv.FormatUint(uint64(root), 10), blocking: true})
@@ -303,6 +328,8 @@ func (r *Runtime) copy(root uint32, scope map[uint32]uint32) (newRoot uint32, ne
     return newBlock, scope
   case listBlock:
     return root, scope
+  case booleanBlock:
+    return root, scope
   case additionBlock:
     return root, scope
   case multiplicationBlock:
@@ -314,6 +341,8 @@ func (r *Runtime) copy(root uint32, scope map[uint32]uint32) (newRoot uint32, ne
   case equalityBlock:
     return root, scope
   case moduloBlock:
+    return root, scope
+  case ifBlock:
     return root, scope
   }
   r.errors.fatal(vmError{title: "Illegal Kind during runtime evaluation", desc: "Found kind "+strconv.FormatInt(int64(r.getKind(root)), 10) + " at position "+strconv.FormatUint(uint64(root), 10), blocking: true})

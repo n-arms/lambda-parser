@@ -18,7 +18,7 @@
 %left ' '
 %right ':'
 %start program
-%token DOT LAMBDA OPEN CLOSE UPPER LOWER LET IN QUOTE NUM NIL
+%token DOT LAMBDA OPEN CLOSE UPPER LOWER LET IN QUOTE NUM NIL IF YES NO
 
 
 %%
@@ -81,6 +81,21 @@ expr:       arg
             operator
             {
               $$ = $1;
+            }
+            |
+            IF
+            {
+              $$ = newBlock(24, 0, 0);
+            }
+            |
+            YES
+            {
+              $$ = newBlock(7, 1, 0);
+            }
+            |
+            NO
+            {
+              $$ = newBlock(7, 0, 0);
             }
             ;
 text:

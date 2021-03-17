@@ -43,6 +43,7 @@ struct AbstractBlock{
   21: modulo
   22: floor division?
   23: arrow operator
+  24: if
 */
 
 struct AbstractBlock* compileHeap; //the heap used at compile time

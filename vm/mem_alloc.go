@@ -31,12 +31,14 @@ const (
   applicationBlock = byte(iota)
   pointerBlock = byte(iota)
   listBlock = byte(iota)
+  booleanBlock = byte(7)
   additionBlock = byte(16)
   subtractionBlock = byte(17)
   multiplicationBlock = byte(18)
   divisionBlock = byte(19)
   equalityBlock = byte(20)
   moduloBlock = byte(21)
+  ifBlock = byte(24)
 )
 
 var convertKind = map[string]string {
@@ -47,12 +49,14 @@ var convertKind = map[string]string {
   "4": "6",
   "5": "0",
   "6": "1",
+  "7": "7",
   "16": "16",
   "17": "17",
   "18": "18",
   "19": "19",
   "20": "20",
   "21": "21",
+  "24": "24",
 }
 
 func kindString(kind byte) string {
@@ -71,6 +75,8 @@ func kindString(kind byte) string {
     return "pointer"
   case listBlock:
     return "list"
+  case booleanBlock:
+    return "bool"
   case additionBlock:
     return "+"
   case subtractionBlock:
@@ -83,6 +89,8 @@ func kindString(kind byte) string {
     return "="
   case moduloBlock:
     return "%"
+  case ifBlock:
+    return "IF"
   }
   return ""
 }

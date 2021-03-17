@@ -10,7 +10,12 @@
 " "     {
           return ' ';
         }
-
+"true"  {
+          return (YES);
+        }
+"false" {
+          return (NO);
+        }
 [a-z]   {
           yylval = yytext[0] - 'a';
           return (LOWER);
@@ -38,6 +43,9 @@
         }
 "IN"    {
           return (IN);
+        }
+"IF"    {
+          return (IF);
         }
 [A-Z]   {
           yylval = yytext[0] - 'A';
