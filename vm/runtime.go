@@ -104,6 +104,8 @@ func (r *Runtime) BlockString(root uint32) string {
       return "false"
     }
     return "true"
+  case refSaveBlock:
+    return "\\" + r.BlockString(r.getLeft(root)) + "." + r.BlockString(r.getRight(root))
   }
   return kindString(r.getKind(root))
 }
@@ -225,6 +227,9 @@ func (r *Runtime) eval(root uint32) uint32 {
       r.setKind(root, pointerBlock)
       r.setLeft(root, r.betaReduce(r.getLeft(root), r.getRight(root)))
       return r.eval(root)
+    }else if r.getKind(r.getLeft(root)) == refSaveBlock {
+      r.set(r.getLeft(r.getLeft(root)), pointerBlock, r.getRight(root), 0)
+      return r.eval(r.getRight(r.getLeft(root)))
     }else {
       r.setLeft(root, r.eval(r.getLeft(root)))
       r.setLeft(root, r.nextNonPointer(r.getLeft(root)))
@@ -240,6 +245,8 @@ func (r *Runtime) eval(root uint32) uint32 {
   case listBlock:
     return root
   case booleanBlock:
+    return root
+  case refSaveBlock:
     return root
   case additionBlock:
     return root
@@ -328,6 +335,8 @@ func (r *Runtime) copy(root uint32, scope map[uint32]uint32) (newRoot uint32, ne
     return newBlock, scope
   case listBlock:
     return root, scope
+  case refSaveBlock:
+    return r.copyAppliLambda(root, scope, newBlock)
   case booleanBlock:
     return root, scope
   case additionBlock:

@@ -32,6 +32,7 @@ const (
   pointerBlock = byte(iota)
   listBlock = byte(iota)
   booleanBlock = byte(7)
+  refSaveBlock = byte(10)
   additionBlock = byte(16)
   subtractionBlock = byte(17)
   multiplicationBlock = byte(18)
@@ -50,6 +51,7 @@ var convertKind = map[string]string {
   "5": "0",
   "6": "1",
   "7": "7",
+  "10": "10",
   "16": "16",
   "17": "17",
   "18": "18",
@@ -77,6 +79,8 @@ func kindString(kind byte) string {
     return "list"
   case booleanBlock:
     return "bool"
+  case refSaveBlock:
+    return "reference saving lambda"
   case additionBlock:
     return "+"
   case subtractionBlock:

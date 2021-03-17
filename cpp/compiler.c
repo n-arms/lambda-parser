@@ -35,6 +35,17 @@ void pointArg(unsigned root, unsigned* scope, unsigned char* used){
     case 3: //pointer
     pointArg((compileHeap+root) -> a_, scope, used);
     return;
+    case 10: //ref saving abstraction
+    newScope = (unsigned*) (malloc(26 * sizeof(unsigned)));
+    newUsed = (unsigned char*) (malloc(26 * sizeof(unsigned char)));
+    for (int i = 0; i<26; i++){
+      newScope[i] = scope[i];
+      newUsed[i] = used[i];
+    }
+    newScope[((compileHeap+root) -> a_ + compileHeap) -> a_ - 'a'] = (compileHeap+root) -> a_;
+    newUsed[((compileHeap+root) -> a_ + compileHeap) -> a_ - 'a'] = 1;
+    pointArg((compileHeap+root) -> b_, newScope, newUsed);
+    return;
     default:
     return;
   }

@@ -23,22 +23,7 @@
 
 %%
 
-/*program:
-            |
-            program line '\n'
-            |
-            program error '\n'
-            {
-              yyerrok;
-            }
-            ;
-line:       expr
-            |
-            LET '\n' arg '=' expr '\n' IN '\n' expr
-            {
-              newBlock(1, newBlock(2, newBlock(0, $3, 0), $9), $5);
-            }
-            ;*/
+
 program:    expr
             |
             error
@@ -52,7 +37,7 @@ arg:        LOWER
             };
 expr:       LET ' ' arg '=' expr ' ' IN ' ' expr
             {
-              $$ = newBlock(1, newBlock(2, newBlock(0, $3, 0), $9), $5);
+              $$ = newBlock(1, newBlock(10, newBlock(0, $3, 0), $9), $5);
             }
             |
             arg

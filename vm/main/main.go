@@ -9,7 +9,7 @@ import (
 
 func main() {
   if len(os.Args) == 1{
-    r := run.NewRuntime("../../cpp/example.heap", 600)
+    r := run.NewRuntime("../../cpp/example.heap", 50)
     fmt.Println(r)
     r.Run()
     fmt.Println("new root:", r.GetRoot())

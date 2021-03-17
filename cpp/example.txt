@@ -1,4 +1,1 @@
-IF
- true
- 42
- 24
+LET a=(|a.(|b.(|c.a b c a b c a b c))) IN ((|x.3) a)

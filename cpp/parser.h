@@ -28,11 +28,12 @@ struct AbstractBlock{
   7: boolean (yay, the most wasteful data type yet!)
   8: floating point magic?
   9: character (instead of using arguments as strings, this will provide compatibility to pattern matching)
+  10: ref saving abstractions -> to be used in let statements
 
-10 - 15: pattern matching
-  10: error -> to be returned on a failed pattern match
-  11: fail -> to be returned on a failed instance of | (doesnt necessarily represent a failed match)
-  12: infinix | operator -> essentially a switch statement for pattern matching
+11 - 15: pattern matching
+  11: error -> to be returned on a failed pattern match
+  12: fail -> to be returned on a failed instance of | (doesnt necessarily represent a failed match)
+  13: infinix | operator -> essentially a switch statement for pattern matching
 
 16 - 25: arithmetic operators (prefix)
   16: addition
