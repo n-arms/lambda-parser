@@ -35,6 +35,8 @@ const (
   subtractionBlock = byte(17)
   multiplicationBlock = byte(18)
   divisionBlock = byte(19)
+  equalityBlock = byte(20)
+  moduloBlock = byte(21)
 )
 
 var convertKind = map[string]string {
@@ -49,6 +51,8 @@ var convertKind = map[string]string {
   "17": "17",
   "18": "18",
   "19": "19",
+  "20": "20",
+  "21": "21",
 }
 
 func kindString(kind byte) string {
@@ -75,6 +79,10 @@ func kindString(kind byte) string {
     return "*"
   case divisionBlock:
     return "/"
+  case equalityBlock:
+    return "="
+  case moduloBlock:
+    return "%"
   }
   return ""
 }

@@ -39,6 +39,7 @@ struct AbstractBlock{
   17: subtraction
   18: multiplication
   19: division
+  20: equality
   21: modulo
   22: floor division?
   23: arrow operator

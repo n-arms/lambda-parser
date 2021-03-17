@@ -6,32 +6,6 @@
   void yyerror(char *);
   extern FILE* yyin;
 
-  void printBlock(unsigned head){
-    if ((compileHeap+head) -> type_ == 0){
-      printf("%c", (char)((compileHeap+head) -> a_));
-    }else if ((compileHeap+head) -> type_ == 1){
-      printf("( ");
-      printBlock((compileHeap+head) -> a_);
-      printf(" ");
-      printBlock((compileHeap+head) -> b_);
-      printf(" )");
-    }else if ((compileHeap+head) -> type_ == 2){
-      printf("|");
-      printBlock((compileHeap+head) -> a_);
-      printf(".");
-      printBlock((compileHeap+head) -> b_);
-    }else if ((compileHeap+head) -> type_ == 3){
-      printBlock((compileHeap+head) -> a_);
-    }else if ((compileHeap+head) -> type_ == 4){
-      printf("%c", (char)(((compileHeap+head) -> a_ + compileHeap) -> a_));
-      printBlock((compileHeap+head) -> b_);
-    }else if ((compileHeap+head) -> type_ == 5){
-      return;
-    }else if ((compileHeap+head) -> type_ == 6){
-      printf("%d", (compileHeap+head) -> a_);
-    }
-  }
-
   unsigned newBlock(unsigned kind, unsigned a, unsigned b) {
     (compileHeap+compileHeapSize) -> type_ = kind;
     (compileHeap+compileHeapSize) -> a_ = a;
@@ -109,13 +83,6 @@ expr:       arg
               $$ = $1;
             }
             ;
-            /*
-            |
-            OPEN operator expr ' ' expr CLOSE
-            {
-              $$ = newBlock(1, newBlock(1, $2, $3), $5);
-            }
-            ;*/
 text:
             {
               $$ = newBlock(5, 0, 0);
@@ -154,6 +121,16 @@ operator:   '+'
             '/'
             {
               $$ = newBlock(19, 0, 0);
+            }
+            |
+            '%'
+            {
+              $$ = newBlock(21, 0, 0);
+            }
+            |
+            '='
+            {
+              $$ = newBlock(20, 0, 0);
             }
             ;
 %%

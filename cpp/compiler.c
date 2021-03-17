@@ -35,19 +35,7 @@ void pointArg(unsigned root, unsigned* scope, unsigned char* used){
     case 3: //pointer
     pointArg((compileHeap+root) -> a_, scope, used);
     return;
-    case 4: //list
-    return;
-    case 5: //null
-    return;
-    case 6: //integer
-    return;
-    case 16: //addition
-    return;
-    case 17: //subtraction
-    return;
-    case 18: //multiplication
-    return;
-    case 19: //divison
+    default:
     return;
   }
 }
