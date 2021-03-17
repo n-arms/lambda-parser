@@ -169,7 +169,7 @@ func (r *Runtime) evalOp(root uint32){
     case equalityBlock:
       reduce()
       if isValid() {
-        r.setKind(root, numberBlock)
+        r.setKind(root, booleanBlock)
         temp = r.getLeft(r.getRight(r.getLeft(root))) == r.getLeft(r.getRight(root))
         if temp {
           r.setLeft(root, 1)

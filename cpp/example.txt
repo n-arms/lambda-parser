@@ -1,1 +1,4 @@
-(|x.IF x 1 2) false
+IF
+ true
+ 42
+ 24
