@@ -31,6 +31,14 @@
       printf("%d", (compileHeap+head) -> a_);
     }
   }
+
+  unsigned newBlock(unsigned kind, unsigned a, unsigned b) {
+    (compileHeap+compileHeapSize) -> type_ = kind;
+    (compileHeap+compileHeapSize) -> a_ = a;
+    (compileHeap+compileHeapSize) -> b_ = b;
+    compileHeapSize++;
+    return compileHeapSize-1;
+  }
 %}
 
 %left ' '
@@ -54,18 +62,7 @@ line:       expr
             |
             LET '\n' arg '=' expr '\n' IN '\n' expr
             {
-              (compileHeap+compileHeapSize) -> type_ = 0;
-              (compileHeap+compileHeapSize) -> a_ = $3;
-              compileHeapSize++;
-
-              (compileHeap+compileHeapSize) -> type_ = 2;
-              (compileHeap+compileHeapSize) -> a_ = compileHeapSize-1;
-              (compileHeap+compileHeapSize) -> b_ = $9;
-              compileHeapSize++;
-              (compileHeap+compileHeapSize) -> type_ = 1;
-              (compileHeap+compileHeapSize) -> a_ = compileHeapSize-1;
-              (compileHeap+compileHeapSize) -> b_ = $5;
-              compileHeapSize++;
+              newBlock(1, newBlock(2, newBlock(0, $3, 0), $9), $5);
             }
             ;
 arg:        LOWER
@@ -74,33 +71,17 @@ arg:        LOWER
             };
 expr:       arg
             {
-              (compileHeap+compileHeapSize) -> a_ = $1;
-              (compileHeap+compileHeapSize) -> type_ = 0;
-              (compileHeap+compileHeapSize) -> b_ = 0;
-              compileHeapSize++;
-              $$ = compileHeapSize-1;
+              $$ = newBlock(0, $1, 0);
             }
             |
             expr ' ' expr
             {
-              (compileHeap+compileHeapSize) -> type_ = 1;
-              (compileHeap+compileHeapSize) -> a_ = $1;
-              (compileHeap+compileHeapSize) -> b_ = $3;
-              compileHeapSize++;
-              $$ = compileHeapSize-1;
+              $$ = newBlock(1, $1, $3);
             }
             |
             OPEN LAMBDA arg DOT expr CLOSE
             {
-              (compileHeap+compileHeapSize) -> type_ = 0;
-              (compileHeap+compileHeapSize) -> a_ = $3;
-              (compileHeap+compileHeapSize) -> b_ = 0;
-              compileHeapSize++;
-              (compileHeap+compileHeapSize) -> type_ = 2;
-              (compileHeap+compileHeapSize) -> a_ = compileHeapSize-1;
-              (compileHeap+compileHeapSize) -> b_ = $5;
-              compileHeapSize++;
-              $$ = compileHeapSize-1;
+              $$ = newBlock(2, newBlock(0, $3, 0), $5);
             }
             |
             QUOTE text QUOTE
@@ -110,11 +91,7 @@ expr:       arg
             |
             NUM
             {
-              (compileHeap+compileHeapSize) -> type_ = 6;
-              (compileHeap+compileHeapSize) -> a_ = $1;
-              (compileHeap+compileHeapSize) -> b_ = 0;
-              compileHeapSize++;
-              $$ = compileHeapSize-1;
+              $$ = newBlock(6, $1, 0);
             }
             |
             OPEN expr CLOSE
@@ -129,84 +106,47 @@ expr:       arg
             |
             OPEN operator expr ' ' expr CLOSE
             {
-              (compileHeap+compileHeapSize) -> type_ = 1;
-              (compileHeap+compileHeapSize) -> a_ = $2;
-              (compileHeap+compileHeapSize) -> b_ = $3;
-              compileHeapSize++;
-              (compileHeap+compileHeapSize) -> type_ = 1;
-              (compileHeap+compileHeapSize) -> a_ = compileHeapSize-1;
-              (compileHeap+compileHeapSize) -> b_ = $5;
-              compileHeapSize++;
-              $$ = compileHeapSize-1;
+              $$ = newBlock(1, newBlock(1, $2, $3), $5);
             }
             ;
 text:
             {
-              (compileHeap+compileHeapSize) -> type_ = 5;
-              (compileHeap+compileHeapSize) -> a_ = 0;
-              (compileHeap+compileHeapSize) -> b_ = 0;
-              compileHeapSize++;
-              $$ = compileHeapSize-1;
+              $$ = newBlock(5, 0, 0);
             }
             |
             arg text
             {
-              (compileHeap+compileHeapSize) -> type_ = 0;
-              (compileHeap+compileHeapSize) -> a_ = $1;
-              (compileHeap+compileHeapSize) -> b_ = 0;
-              compileHeapSize++;
-
-              (compileHeap+compileHeapSize) -> type_ = 4;
-              (compileHeap+compileHeapSize) -> a_ = compileHeapSize-1;
-              (compileHeap+compileHeapSize) -> b_ = $2;
-              compileHeapSize++;
-              $$ = compileHeapSize-1;
+              $$ = newBlock(4, newBlock(0, $1, 0), $2);
             }
             ;
 list:       NIL
             {
-              (compileHeap+compileHeapSize) -> type_ = 5;
-              (compileHeap+compileHeapSize) -> a_ = 0;
-              (compileHeap+compileHeapSize) -> b_ = 0;
-              compileHeapSize++;
-              $$ = compileHeapSize-1;
+              $$ = newBlock(5, 0, 0);
             }
             |
             expr ':' list
             {
-              (compileHeap+compileHeapSize) -> type_ = 4;
-              (compileHeap+compileHeapSize) -> a_ = $1;
-              (compileHeap+compileHeapSize) -> b_ = $3;
-              compileHeapSize++;
-              $$ = compileHeapSize-1;
+              $$ = newBlock(4, $1, $3);
             }
             ;
 operator:   '+'
             {
-              (compileHeap+compileHeapSize) -> type_ = 16;
-              compileHeapSize++;
-              $$ = compileHeapSize-1;
+              $$ = newBlock(16, 0, 0);
             }
             |
             '-'
             {
-              (compileHeap+compileHeapSize) -> type_ = 17;
-              compileHeapSize++;
-              $$ = compileHeapSize-1;
+              $$ = newBlock(17, 0, 0);
             }
             |
             '*'
             {
-              (compileHeap+compileHeapSize) -> type_ = 18;
-              compileHeapSize++;
-              $$ = compileHeapSize-1;
+              $$ = newBlock(18, 0, 0);
             }
             |
             '/'
             {
-              (compileHeap+compileHeapSize) -> type_ = 19;
-              compileHeapSize++;
-              $$ = compileHeapSize-1;
+              $$ = newBlock(19, 0, 0);
             }
             ;
 %%
