@@ -243,6 +243,8 @@ func (r *Runtime) eval(root uint32) uint32 {
     r.setLeft(root, r.eval(r.getLeft(root)))
     return r.getLeft(root)
   case listBlock:
+    r.setLeft(root, r.eval(r.getLeft(root)))
+    r.setRight(root, r.eval(r.getRight(root)))
     return root
   case booleanBlock:
     return root
@@ -313,6 +315,7 @@ func (r *Runtime) copy(root uint32, scope map[uint32]uint32) (newRoot uint32, ne
   newBlock := getBlock(r)
   r.setKind(newBlock, r.getKind(root))
   r.setLeft(newBlock, r.getLeft(root))
+  var temp uint32
 
   switch r.getKind(root) {
   case nullBlock:
@@ -334,7 +337,11 @@ func (r *Runtime) copy(root uint32, scope map[uint32]uint32) (newRoot uint32, ne
     r.setLeft(newBlock, scope[r.getLeft(root)])
     return newBlock, scope
   case listBlock:
-    return root, scope
+    temp, _ = r.copy(r.getLeft(root), scope)
+    r.setLeft(newBlock, temp)
+    temp, _ = r.copy(r.getRight(root), scope)
+    r.setRight(newBlock, temp)
+    return newBlock, scope
   case refSaveBlock:
     return r.copyAppliLambda(root, scope, newBlock)
   case booleanBlock:
@@ -360,7 +367,7 @@ func (r *Runtime) copy(root uint32, scope map[uint32]uint32) (newRoot uint32, ne
 
 func (r *Runtime) Run() {
   r.root = r.eval(r.root)
-  //r.root, _ = r.copy(r.root, make(map[uint32]uint32))
+  r.errors.check()
 }
 
 func (r *Runtime) GetHeap() []string {

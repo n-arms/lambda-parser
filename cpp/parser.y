@@ -70,11 +70,6 @@ expr:       LET ' ' arg '=' expr ' ' IN ' ' expr
               $$ = $2;
             }
             |
-            OPEN list CLOSE
-            {
-              $$ = $2;
-            }
-            |
             operator
             {
               $$ = $1;
@@ -94,6 +89,16 @@ expr:       LET ' ' arg '=' expr ' ' IN ' ' expr
             {
               $$ = newBlock(7, 0, 0);
             }
+            |
+            NIL
+            {
+              $$ = newBlock(5, 0, 0);
+            }
+            |
+            expr ':' expr
+            {
+              $$ = newBlock(4, $1, $3);
+            }
             ;
 text:
             {
@@ -103,16 +108,6 @@ text:
             arg text
             {
               $$ = newBlock(4, newBlock(0, $1, 0), $2);
-            }
-            ;
-list:       NIL
-            {
-              $$ = newBlock(5, 0, 0);
-            }
-            |
-            expr ':' list
-            {
-              $$ = newBlock(4, $1, $3);
             }
             ;
 operator:   '+'

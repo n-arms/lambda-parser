@@ -46,6 +46,10 @@ void pointArg(unsigned root, unsigned* scope, unsigned char* used){
     newUsed[((compileHeap+root) -> a_ + compileHeap) -> a_ - 'a'] = 1;
     pointArg((compileHeap+root) -> b_, newScope, newUsed);
     return;
+    case 4: //list
+    pointArg((compileHeap+root) -> a_, scope, used);
+    pointArg((compileHeap+root) -> b_, scope, used);
+    return;
     default:
     return;
   }
