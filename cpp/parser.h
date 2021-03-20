@@ -47,5 +47,5 @@ struct AbstractBlock{
   24: if
 */
 
-struct AbstractBlock* compileHeap; //the heap used at compile time
-unsigned compileHeapSize; //the size of the compile time heap
+extern struct AbstractBlock* compileHeap; //the heap used at compile time
+extern unsigned compileHeapSize; //the size of the compile time heap
