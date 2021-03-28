@@ -1,7 +1,1 @@
-LET
- y=(|f.(|x.f (x x)) (|x.f (x x)))
- IN
- LET
- c=(|s.(|n.IF (= n 0) (0:[]) (n:(s (- n 1)))))
- IN
- (y c 3)
+(|a.|b.a) q p

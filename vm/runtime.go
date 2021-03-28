@@ -85,6 +85,13 @@ func (r *Runtime) nextNonPointer(root uint32) uint32 {
   return r.nextNonPointer(r.getLeft(root))
 }
 
+func (r *Runtime) isString(root uint32) bool {
+  if r.getKind(root) == listBlock {
+    return r.getKind(r.getLeft(root)) == argumentBlock
+  }
+  return false
+}
+
 func (r *Runtime) BlockString(root uint32) string {
   switch r.heap[root].kind {
   case numberBlock:
@@ -98,7 +105,13 @@ func (r *Runtime) BlockString(root uint32) string {
   case pointerBlock:
     return r.BlockString(r.getLeft(root))
   case listBlock:
-    return r.BlockString(r.getLeft(root)) + ":" + r.BlockString(r.getRight(root))
+    if r.isString(root) {
+      if r.getKind(r.getRight(root)) != nullBlock {
+        return r.BlockString(r.getLeft(root)) + " " + r.BlockString(r.getRight(root))
+      }
+      return r.BlockString(r.getLeft(root))
+    }
+    return r.BlockString(r.getLeft(root)) + "\n" + r.BlockString(r.getRight(root))
   case booleanBlock:
     if r.getLeft(root) == 0 {
       return "false"
@@ -116,19 +129,6 @@ func (r *Runtime) String() string {
     output = append(output, byte(value))
   }
   output = append(output, '\n')
-  for i, value := range r.heap {
-    for _, char := range strconv.FormatInt(int64(i), 10)+": "+kindString(value.kind)+" "+strconv.FormatUint(uint64(value.left), 10)+", "+strconv.FormatUint(uint64(value.right), 10)+"\n" {
-      output = append(output, byte(char))
-    }
-  }
-
-  output = append(output, '\n')
-  output = append(output, '\n')
-
-  for key, _ := range r.freeMemory {
-    output = append(output, byte(key))
-    output = append(output, '\n')
-  }
 
   return string(output)
 }

@@ -17,8 +17,9 @@
 
 %left ' '
 %right ':'
+%left '.'
 %start program
-%token DOT LAMBDA OPEN CLOSE UPPER LOWER LET IN QUOTE NUM NIL IF YES NO
+%token LAMBDA OPEN CLOSE UPPER LOWER LET IN QUOTE NUM NIL IF YES NO
 
 
 %%
@@ -50,9 +51,15 @@ expr:       LET ' ' arg '=' expr ' ' IN ' ' expr
               $$ = newBlock(1, $1, $3);
             }
             |
+            /*
             OPEN LAMBDA arg DOT expr CLOSE
             {
               $$ = newBlock(2, newBlock(0, $3, 0), $5);
+            }
+            |*/
+            LAMBDA arg '.' expr
+            {
+              $$ = newBlock(2, newBlock(0, $2, 0), $4);
             }
             |
             QUOTE text QUOTE
@@ -146,7 +153,7 @@ void yyerror(char *s){
 }
 
 void setup(){
-  compileHeap = (struct AbstractBlock*) (malloc(100*sizeof(struct AbstractBlock)));
+  compileHeap = (struct AbstractBlock*) (malloc(500*sizeof(struct AbstractBlock)));
   compileHeapSize = 0;
 }
 

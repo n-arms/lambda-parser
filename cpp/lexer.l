@@ -24,7 +24,7 @@
           return (LAMBDA);
         }
 "."     {
-          return (DOT);
+          return ('.');
         }
 "("     {
           return(OPEN);
