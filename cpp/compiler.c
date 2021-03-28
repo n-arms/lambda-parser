@@ -22,7 +22,20 @@ void pointArg(unsigned root, unsigned* scope, unsigned char* used){
     return;
     case 1: //application
     pointArg((compileHeap+root) -> a_, scope, used);
-    pointArg((compileHeap+root) -> b_, scope, used);
+
+    if (((compileHeap+root) -> a_ + compileHeap) -> type_ == 10) {
+      newScope = (unsigned*) (malloc(26 * sizeof(unsigned)));
+      newUsed = (unsigned char*) (malloc(26 * sizeof(unsigned char)));
+      for (int i = 0; i<26; i++){
+        newScope[i] = scope[i];
+        newUsed[i] = used[i];
+      }
+      newScope[(((compileHeap+root) -> a_ + compileHeap) -> a_ + compileHeap) -> a_ - 'a'] = (compileHeap+root) -> b_;
+      newUsed[(((compileHeap+root) -> a_ + compileHeap) -> a_ + compileHeap) -> a_ - 'a'] = 1;
+      pointArg((compileHeap+root) -> b_, newScope, newUsed);
+    }else{
+      pointArg((compileHeap+root) -> b_, scope, used);
+    }
     return;
     case 2: //abstraction
     newScope = (unsigned*) (malloc(26 * sizeof(unsigned)));

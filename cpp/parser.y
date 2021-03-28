@@ -15,9 +15,10 @@
   }
 %}
 
+%left '.'
 %left ' '
 %right ':'
-%left '.'
+
 %start program
 %token LAMBDA OPEN CLOSE UPPER LOWER LET IN QUOTE NUM NIL IF YES NO
 
@@ -46,20 +47,14 @@ expr:       LET ' ' arg '=' expr ' ' IN ' ' expr
               $$ = newBlock(0, $1, 0);
             }
             |
-            expr ' ' expr
-            {
-              $$ = newBlock(1, $1, $3);
-            }
-            |
-            /*
-            OPEN LAMBDA arg DOT expr CLOSE
-            {
-              $$ = newBlock(2, newBlock(0, $3, 0), $5);
-            }
-            |*/
             LAMBDA arg '.' expr
             {
               $$ = newBlock(2, newBlock(0, $2, 0), $4);
+            }
+            |
+            expr ' ' expr
+            {
+              $$ = newBlock(1, $1, $3);
             }
             |
             QUOTE text QUOTE

@@ -208,6 +208,7 @@ func (r *Runtime) evalIf(root uint32) {
 }
 
 func (r *Runtime) eval(root uint32) uint32 {
+  fmt.Println("evaluating root", root)
   switch r.getKind(root) {
   case nullBlock:
     return root
@@ -218,6 +219,7 @@ func (r *Runtime) eval(root uint32) uint32 {
   case lambdaBlock:
     return root
   case applicationBlock:
+
     r.evalOp(root)
     if r.getKind(root) != applicationBlock {
       return root
@@ -316,6 +318,7 @@ func (r *Runtime) copy(root uint32, scope map[uint32]uint32) (newRoot uint32, ne
   r.setKind(newBlock, r.getKind(root))
   r.setLeft(newBlock, r.getLeft(root))
   var temp uint32
+  var temp2 uint32
 
   switch r.getKind(root) {
   case nullBlock:
@@ -333,7 +336,11 @@ func (r *Runtime) copy(root uint32, scope map[uint32]uint32) (newRoot uint32, ne
       r.setLeft(newBlock, scope[r.getLeft(root)])
       return newBlock, scope
     }
-    scope[r.getLeft(root)], scope = r.copy(r.getLeft(root), scope)
+    fmt.Println("copying and creating new pointer at root", root)
+    temp = r.new(pointerBlock, 0, 0)
+    scope[r.getLeft(root)] = temp
+    temp2, scope = r.copy(r.getLeft(root), scope)
+    r.setLeft(temp, temp2)
     r.setLeft(newBlock, scope[r.getLeft(root)])
     return newBlock, scope
   case listBlock:
